@@ -21,6 +21,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.10.0"
+    "@pandacss/dev": "^0.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.3.0"
   }
 }
