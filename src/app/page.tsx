@@ -8,6 +8,9 @@ import { center, flex, grid } from '../../styled-system/patterns'
 export default function Home() {
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
+  const [composing, setComposition] = useState(false)
+  const startComposition = () => setComposition(true)
+  const endComposition = () => setComposition(false)
 
   const handleClick = async () => {
     try {
@@ -19,6 +22,14 @@ export default function Home() {
       setResults(result.results.results)
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleKeyDown = async (e: any) => {
+    if (e.key === 'Enter' && !composing) {
+      e.preventDefault()
+      await handleClick()
     }
   }
 
@@ -111,10 +122,10 @@ export default function Home() {
                 },
               })}
             >
-              <textarea
-                rows={3}
+              <input
+                type="text"
                 className={css({
-                  borderRadius: '8px',
+                  borderRadius: '3em',
                   fontSize: '18px',
                   width: '100%',
                   padding: '12px 76px 12px 48px',
@@ -128,8 +139,11 @@ export default function Home() {
                   },
                 })}
                 placeholder="知りたいことを文章で書いてみてください"
+                onCompositionStart={startComposition}
+                onCompositionEnd={endComposition}
                 onChange={(e) => setCurrentPrompt(e.target.value)}
-              ></textarea>
+                onKeyDown={handleKeyDown}
+              />
               <button
                 type="button"
                 className={css({
