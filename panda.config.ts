@@ -9,6 +9,10 @@ const globalCss = defineGlobalStyles({
     padding: '0',
     boxSizing: 'border-box',
   },
+  'ul, ol': {
+    margin: '0',
+    padding: '0',
+  },
 })
 
 export default defineConfig({

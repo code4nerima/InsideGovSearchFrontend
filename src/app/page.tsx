@@ -178,7 +178,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div
+          <ul
             className={flex({
               flexDirection: 'column',
               align: 'center',
@@ -186,7 +186,7 @@ export default function Home() {
             })}
           >
             {results.map((result, i) => (
-              <dl
+              <li
                 key={`result-${i}`}
                 className={css({
                   width: 'min(80%, 500px)',
@@ -197,24 +197,25 @@ export default function Home() {
                   color: '#000',
                 })}
               >
-                {Object.entries(result).map(([key, value], j) => (
-                  <React.Fragment key={`result-${j}`}>
-                    <dt
-                      className={css({
-                        float: 'left',
-                        marginRight: '16px',
-                        _after: { content: '" : "' },
-                      })}
-                    >
-                      {key}
-                    </dt>
-                    <dd>{value as string}</dd>
-                  </React.Fragment>
-                ))}
-              </dl>
+                <dl>
+                  {Object.entries(result).map(([key, value], j) => (
+                    <React.Fragment key={`result-${j}`}>
+                      <dt
+                        className={css({
+                          float: 'left',
+                          marginRight: '16px',
+                          _after: { content: '" : "' },
+                        })}
+                      >
+                        {key}
+                      </dt>
+                      <dd>{value as string}</dd>
+                    </React.Fragment>
+                  ))}
+                </dl>
+              </li>
             ))}
-            {}
-          </div>
+          </ul>
         </div>
         <footer className={css({ padding: '0 18px' })}>
           <p>
