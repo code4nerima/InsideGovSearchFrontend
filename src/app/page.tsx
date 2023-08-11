@@ -11,7 +11,7 @@ export default function Home() {
 
   const handleClick = async () => {
     try {
-      const data = await fetch('/api/search', {
+      const data = await fetch('./api/search', {
         method: 'POST',
         body: JSON.stringify({ prompt: currentPrompt }),
       })
