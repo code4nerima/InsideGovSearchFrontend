@@ -7,6 +7,7 @@ const globalCss = defineGlobalStyles({
     lineHeight: '1.55',
     margin: '0',
     padding: '0',
+    boxSizing: 'border-box',
   },
 })
 
@@ -53,7 +54,7 @@ export default defineConfig({
         black: { value: '900' },
       },
       shadows: {
-        default: { value: '1px 1px 1px rgba(0, 0, 0, 0.2)' },
+        default: { value: '1px 1px 1px rgba(0, 0, 0, 0.25)' },
       },
     },
   },
