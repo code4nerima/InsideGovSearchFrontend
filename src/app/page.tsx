@@ -53,9 +53,8 @@ export default function Home() {
       >
         <Image
           alt=""
-          src="images/bg.webp"
+          src="/images/bg.webp"
           fill
-          unoptimized
           sizes="100vw"
           style={{
             objectFit: 'cover',
