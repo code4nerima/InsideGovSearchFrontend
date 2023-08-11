@@ -78,8 +78,6 @@ jobs:
           API_URL: ${{ secrets.API_URL }}
           API_AUTH_KEY: ${{ secrets.API_AUTH_KEY }}
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
-      - name: Static HTML export with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next export
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
