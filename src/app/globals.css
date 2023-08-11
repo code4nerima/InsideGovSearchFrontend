@@ -1,3 +1,4 @@
 @import '@fontsource-variable/m-plus-2';
+@import '@fontsource-variable/material-symbols-rounded';
 
 @layer reset, base, tokens, recipes, utilities;

@@ -3,8 +3,10 @@ import { defineConfig, defineGlobalStyles } from '@pandacss/dev'
 const globalCss = defineGlobalStyles({
   'html, body': {
     fontFamily: '"M PLUS 2 Variable", sans-serif',
-    color: 'red',
+    color: '#000',
     lineHeight: '1.55',
+    margin: '0',
+    padding: '0',
   },
 })
 
@@ -23,7 +25,20 @@ export default defineConfig({
 
   // Useful for theme customization
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        FloatHorizontal: {
+          '0%': { transform: 'translate3d(5px,0,0)' },
+          '50%': { transform: 'translate3d(-5px,0,0)' },
+          '100%': { transform: 'translate3d(5px,0,0)' },
+        },
+        FloatVertical: {
+          '0%': { transform: 'translate3d(0,5px,0)' },
+          '50%': { transform: 'translate3d(0,-5px,0)' },
+          '100%': { transform: 'translate3d(0,5px,0)' },
+        },
+      },
+    },
     tokens: {
       colors: {
         nerimaDark: { value: '#004B38' },
@@ -36,6 +51,9 @@ export default defineConfig({
         normal: { value: '400' },
         bold: { value: '700' },
         black: { value: '900' },
+      },
+      shadows: {
+        default: { value: '1px 1px 1px rgba(0, 0, 0, 0.2)' },
       },
     },
   },

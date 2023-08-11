@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fontsource-variable/m-plus-2": "^5.0.7",
+    "@fontsource-variable/material-symbols-rounded": "^5.0.7",
     "@fontsource/m-plus-2": "^5.0.7",
     "@types/node": "20.4.9",
     "@types/react": "18.2.20",
