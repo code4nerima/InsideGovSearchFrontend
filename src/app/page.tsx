@@ -68,7 +68,6 @@ export default function Home() {
         className={grid({
           columns: 1,
           gridTemplateRows: 'auto min-content',
-          gap: '18px',
           height: '100dvh',
         })}
       >
@@ -78,11 +77,20 @@ export default function Home() {
             gridTemplateRows: 'auto min-content',
             gap: '18px',
             margin: 'min(4vw, 60px)',
-            padding: '0 18px',
+            padding: 'min(4vw, 40px)',
             border: '1px solid white',
             borderRadius: '7vw',
           })}
         >
+          <h1
+            className={css({
+              fontSize: 'clamp(18px, (1rem + 5vw), 24px)',
+              fontWeight: 'normal',
+              marginTop: '0',
+            })}
+          >
+            練馬区届出・手続きガイド
+          </h1>
           <div
             className={flex({
               flexDirection: 'column',
@@ -107,76 +115,84 @@ export default function Home() {
                 あなたが知りたいことはなんですか？
               </span>
             </p>
-            <div
-              className={css({
-                position: 'relative',
-                width: 'min(95%, 550px)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                _before: {
-                  content: '"search"',
-                  fontFamily: 'Material Symbols Rounded Variable',
-                  fontSize: '30px',
-                  color: 'nerimaDark',
-                  position: 'absolute',
-                  left: '12px',
-                },
-              })}
-            >
-              <input
-                type="text"
-                className={css({
-                  borderRadius: '3em',
-                  fontSize: '18px',
-                  width: '100%',
-                  padding: '12px 76px 12px 48px',
-                  border: 'none',
-                  backgroundColor: 'nerimaLight',
-                  boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)',
-                  _placeholder: {
-                    fontFamily: '"M PLUS 2 Variable", sans-serif',
-                    fontWeight: 'thin',
-                    color: 'nerimaDark',
-                  },
-                })}
-                placeholder="知りたいことを文章で書いてみてください"
-                onCompositionStart={startComposition}
-                onCompositionEnd={endComposition}
-                onChange={(e) => setCurrentPrompt(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <button
-                type="button"
-                className={css({
-                  appearance: 'none',
-                  border: 'none',
-                  background: 'none',
-                  position: 'absolute',
-                  right: '12px',
-                  width: 'max-content',
-                  textAlign: 'center',
-                  color: 'nerimaDark',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                  _before: {
-                    backgroundColor: 'nerimaDark',
-                    content: '""',
-                    display: 'block',
-                    width: '1px',
-                    height: '24px',
-                    position: 'absolute',
-                    bottom: '0',
-                    top: '0',
-                    left: '-6px',
-                    margin: 'auto',
-                  },
-                })}
-                onClick={handleClick}
+            <div className={css({ width: 'min(95%, 550px)' })}>
+              <label
+                htmlFor="prompt"
+                className={css({ display: 'block', marginBottom: '12px' })}
               >
-                検索
-              </button>
+                知りたいことを文章で書いてみてください
+              </label>
+              <div
+                className={flex({
+                  position: 'relative',
+                  align: 'center',
+                  justify: 'center',
+                  _before: {
+                    content: '"search"',
+                    fontFamily: 'Material Symbols Rounded Variable',
+                    fontSize: '30px',
+                    color: 'nerimaDark',
+                    position: 'absolute',
+                    left: '12px',
+                  },
+                })}
+              >
+                <input
+                  id="prompt"
+                  type="text"
+                  className={css({
+                    borderRadius: '3em',
+                    fontSize: '18px',
+                    width: '100%',
+                    padding: '12px 76px 12px 48px',
+                    border: 'none',
+                    backgroundColor: 'nerimaLight',
+                    boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)',
+                    _placeholder: {
+                      fontFamily: '"M PLUS 2 Variable", sans-serif',
+                      fontWeight: 'thin',
+                      color: 'nerimaDark',
+                    },
+                  })}
+                  placeholder="例）引っ越ししたときの手続きをしたい"
+                  onCompositionStart={startComposition}
+                  onCompositionEnd={endComposition}
+                  onChange={(e) => setCurrentPrompt(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <button
+                  type="button"
+                  className={css({
+                    appearance: 'none',
+                    border: 'none',
+                    background: 'none',
+                    position: 'absolute',
+                    right: '12px',
+                    width: 'max-content',
+                    textAlign: 'center',
+                    color: 'nerimaDark',
+                    fontSize: '18px',
+                    cursor: 'pointer',
+                    _before: {
+                      backgroundColor: 'nerimaDark',
+                      content: '""',
+                      display: 'block',
+                      width: '1px',
+                      height: '24px',
+                      position: 'absolute',
+                      bottom: '0',
+                      top: '0',
+                      left: '0',
+                      margin: 'auto',
+                    },
+                  })}
+                  onClick={handleClick}
+                >
+                  検索
+                </button>
+              </div>
             </div>
+            h
           </div>
           <ul
             className={flex({
