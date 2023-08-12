@@ -36,6 +36,8 @@ export default function Home() {
     }
   }
 
+  const excludeDisplayKeys = ['タグ']
+
   return (
     <div
       className={css({
@@ -214,20 +216,22 @@ export default function Home() {
                 })}
               >
                 <dl>
-                  {Object.entries(result).map(([key, value], j) => (
-                    <React.Fragment key={`result-${j}`}>
-                      <dt
-                        className={css({
-                          float: 'left',
-                          marginRight: '16px',
-                          _after: { content: '" : "' },
-                        })}
-                      >
-                        {key}
-                      </dt>
-                      <dd>{value as string}</dd>
-                    </React.Fragment>
-                  ))}
+                  {Object.entries(result)
+                    .filter(([k, v]) => v && !excludeDisplayKeys.includes(k))
+                    .map(([key, value], j) => (
+                      <React.Fragment key={`result-${j}`}>
+                        <dt
+                          className={css({
+                            float: 'left',
+                            marginRight: '16px',
+                            _after: { content: '" : "' },
+                          })}
+                        >
+                          {key}
+                        </dt>
+                        <dd>{value as string}</dd>
+                      </React.Fragment>
+                    ))}
                 </dl>
               </li>
             ))}
