@@ -9,6 +9,7 @@ export default function Home() {
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
   const [keyword, setKeyword] = useState('')
+  const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isComposed, setIsComposed] = useState(false)
 
@@ -17,6 +18,7 @@ export default function Home() {
 
   const handleClick = async () => {
     try {
+      setIsSearchExecuting(true)
       const data = await fetch('/api/search', {
         method: 'POST',
         headers: {
@@ -30,6 +32,7 @@ export default function Home() {
     } catch (error) {
       console.error(error)
     } finally {
+      setIsSearchExecuting(false)
       setIsResultResponded(true)
     }
   }
@@ -140,7 +143,7 @@ export default function Home() {
                   _before: {
                     content: '"search"',
                     fontFamily: 'Material Symbols Rounded Variable',
-                    fontSize: '30px',
+                    fontSize: '24px',
                     color: 'nerimaDark',
                     position: 'absolute',
                     left: '12px',
@@ -154,7 +157,7 @@ export default function Home() {
                     borderRadius: '3em',
                     fontSize: '16px',
                     width: '100%',
-                    padding: '12px 76px 12px 48px',
+                    padding: '12px 70px 12px 42px',
                     border: 'none',
                     backgroundColor: 'nerimaLight',
                     boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)',
@@ -163,8 +166,12 @@ export default function Home() {
                       fontWeight: 'thin',
                       color: 'nerimaDark',
                     },
+                    _disabled: {
+                      cursor: 'wait',
+                    },
                   })}
                   placeholder="例）引っ越ししたときの手続きをしたい"
+                  disabled={isSearchExecuting}
                   onCompositionStart={startComposition}
                   onCompositionEnd={endComposition}
                   onChange={(e) => setCurrentPrompt(e.target.value)}
@@ -182,6 +189,7 @@ export default function Home() {
                     textAlign: 'center',
                     color: 'nerimaDark',
                     fontSize: '18px',
+                    padding: '6px',
                     cursor: 'pointer',
                     _before: {
                       backgroundColor: 'nerimaDark',
@@ -195,7 +203,12 @@ export default function Home() {
                       left: '0',
                       margin: 'auto',
                     },
+                    _disabled: {
+                      color: '#71717a',
+                      cursor: 'wait',
+                    },
                   })}
+                  disabled={isSearchExecuting}
                   onClick={handleClick}
                 >
                   検索
