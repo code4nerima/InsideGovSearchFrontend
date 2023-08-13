@@ -8,9 +8,12 @@ import { center, flex, grid } from '../../styled-system/patterns'
 export default function Home() {
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
-  const [composing, setComposition] = useState(false)
-  const startComposition = () => setComposition(true)
-  const endComposition = () => setComposition(false)
+  const [keyword, setKeyword] = useState('')
+  const [isResultResponded, setIsResultResponded] = useState(false)
+  const [isComposed, setIsComposed] = useState(false)
+
+  const startComposition = () => setIsComposed(true)
+  const endComposition = () => setIsComposed(false)
 
   const handleClick = async () => {
     try {
@@ -23,24 +26,28 @@ export default function Home() {
       })
       const result = await data.json()
       setResults(result.results.results)
+      setKeyword(result.results.keywords)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsResultResponded(true)
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
-    if (e.key === 'Enter' && !composing) {
+    if (e.key === 'Enter' && !isComposed) {
       e.preventDefault()
       await handleClick()
     }
   }
 
-  const excludeDisplayKeys = ['タグ']
+  const excludeDisplayKeys = ['書類正式名称', 'タグ']
 
   return (
     <div
       className={css({
+        backgroundColor: 'rgba(30, 58, 138, 0.25)',
         color: 'white',
         '& a': {
           color: 'white',
@@ -76,7 +83,7 @@ export default function Home() {
         <div
           className={grid({
             columns: 1,
-            gridTemplateRows: 'auto min-content',
+            gridTemplateRows: 'min-content auto min-content',
             gap: '18px',
             margin: 'min(4vw, 60px)',
             padding: 'min(4vw, 40px)',
@@ -102,7 +109,7 @@ export default function Home() {
           >
             <p
               className={center({
-                fontSize: '2rem',
+                fontSize: '32px',
                 textShadow: 'default',
                 animation:
                   'FloatHorizontal 7.0s ease-in-out infinite alternate',
@@ -194,48 +201,68 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            h
           </div>
-          <ul
-            className={flex({
-              flexDirection: 'column',
-              align: 'center',
-              justify: 'center',
-            })}
-          >
-            {results.map((result, i) => (
-              <li
-                key={`result-${i}`}
-                className={css({
-                  width: 'min(80%, 500px)',
-                  backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                  padding: '18px 24px',
-                  marginBottom: '18px',
-                  borderRadius: '8px',
-                  color: '#000',
+          {isResultResponded && (
+            <div
+              className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
+            >
+              <h2 className={css({ fontSize: '24px', fontWeight: 'normal' })}>
+                検索結果
+              </h2>
+              <p>
+                「{keyword}」で検索した結果、{results.length}件見つかりました。
+              </p>
+              <ul
+                className={flex({
+                  flexDirection: 'column',
+                  align: 'center',
+                  justify: 'center',
                 })}
               >
-                <dl>
-                  {Object.entries(result)
-                    .filter(([k, v]) => v && !excludeDisplayKeys.includes(k))
-                    .map(([key, value], j) => (
-                      <React.Fragment key={`result-${j}`}>
-                        <dt
-                          className={css({
-                            float: 'left',
-                            marginRight: '16px',
-                            _after: { content: '" : "' },
-                          })}
-                        >
-                          {key}
-                        </dt>
-                        <dd>{value as string}</dd>
-                      </React.Fragment>
-                    ))}
-                </dl>
-              </li>
-            ))}
-          </ul>
+                {results.map((result, i) => (
+                  <li
+                    key={`result-${i}`}
+                    className={css({
+                      width: '100%',
+                      backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                      padding: '18px 24px',
+                      marginBottom: '18px',
+                      borderRadius: '8px',
+                      color: '#000',
+                    })}
+                  >
+                    <h3
+                      className={css({
+                        fontSize: '22px',
+                        fontWeight: 'normal',
+                        marginTop: '0',
+                      })}
+                    >
+                      {`${i + 1}. ${result['書類正式名称']}`}
+                    </h3>
+                    <dl className={css({ fontSize: '14px' })}>
+                      {Object.entries(result)
+                        .filter(([k]) => !excludeDisplayKeys.includes(k))
+                        .map(([key, value], j) => (
+                          <React.Fragment key={`result-${j}`}>
+                            <dt
+                              className={css({
+                                float: 'left',
+                                marginRight: '16px',
+                                _after: { content: '" : "' },
+                              })}
+                            >
+                              {key}
+                            </dt>
+                            <dd>{value as string}</dd>
+                          </React.Fragment>
+                        ))}
+                    </dl>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <footer className={css({ padding: '0 18px' })}>
           <p>

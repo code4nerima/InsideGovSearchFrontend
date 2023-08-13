@@ -1,13 +1,15 @@
 import { defineConfig, defineGlobalStyles } from '@pandacss/dev'
 
 const globalCss = defineGlobalStyles({
+  '*': {
+    boxSizing: 'border-box',
+  },
   'html, body': {
     fontFamily: '"M PLUS 2 Variable", sans-serif',
     color: '#000',
     lineHeight: '1.55',
     margin: '0',
     padding: '0',
-    boxSizing: 'border-box',
   },
   'ul, ol': {
     margin: '0',
