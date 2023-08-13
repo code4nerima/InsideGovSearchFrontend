@@ -47,6 +47,7 @@ export default function Home() {
   return (
     <div
       className={css({
+        minHeight: '100dvh',
         backgroundColor: 'rgba(30, 58, 138, 0.25)',
         color: 'white',
         '& a': {
@@ -77,7 +78,7 @@ export default function Home() {
         className={grid({
           columns: 1,
           gridTemplateRows: 'auto min-content',
-          height: '100dvh',
+          minHeight: '100dvh',
         })}
       >
         <div
@@ -151,7 +152,7 @@ export default function Home() {
                   type="text"
                   className={css({
                     borderRadius: '3em',
-                    fontSize: '18px',
+                    fontSize: '16px',
                     width: '100%',
                     padding: '12px 76px 12px 48px',
                     border: 'none',
