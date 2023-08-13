@@ -213,7 +213,7 @@ export default function Home() {
               <p>
                 「{keyword}」で検索した結果、{results.length}件見つかりました。
               </p>
-              <ul
+              <ol
                 className={flex({
                   flexDirection: 'column',
                   align: 'center',
@@ -261,7 +261,7 @@ export default function Home() {
                     </dl>
                   </li>
                 ))}
-              </ul>
+              </ol>
             </div>
           )}
         </div>
