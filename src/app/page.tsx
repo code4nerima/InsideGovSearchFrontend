@@ -230,7 +230,7 @@ export default function Home() {
                 検索結果
               </h2>
               <p>
-                「{keyword}」で検索した結果、{results.length}件見つかりました。
+                {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
               </p>
               <ol
                 className={flex({
