@@ -44,6 +44,42 @@ export default defineConfig({
           '50%': { transform: 'translate3d(0,-5px,0)' },
           '100%': { transform: 'translate3d(0,5px,0)' },
         },
+        ScaleAlpha: {
+          '0%': {
+            opacity: '1',
+          },
+          '33%': {
+            opacity: '0.25',
+          },
+          '66%': {
+            opacity: '0.25',
+          },
+          '100%': {
+            opacity: '1',
+          },
+        },
+        ScaleAlphaBefore: {
+          '0%': {
+            opacity: '0.25',
+          },
+          '33%': {
+            opacity: '1',
+          },
+          '66%': {
+            opacity: '0.25',
+          },
+        },
+        ScaleAlphaAfter: {
+          '33%': {
+            opacity: '0.25',
+          },
+          '66%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0.25',
+          },
+        },
       },
     },
     tokens: {

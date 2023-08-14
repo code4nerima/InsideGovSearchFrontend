@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
+import Loading from './loading'
 
 export default function Home() {
   const [currentPrompt, setCurrentPrompt] = useState('')
@@ -105,10 +106,12 @@ export default function Home() {
             練馬区届出・手続きガイド
           </h1>
           <div
-            className={flex({
-              flexDirection: 'column',
-              align: 'center',
-              justify: 'center',
+            className={grid({
+              columns: 1,
+              gridTemplateRows: isResultResponded
+                ? 'min-content min-content min-content'
+                : 'min-content min-content 60px',
+              alignSelf: 'center',
             })}
           >
             <p
@@ -128,7 +131,9 @@ export default function Home() {
                 あなたが知りたいことはなんですか？
               </span>
             </p>
-            <div className={css({ width: 'min(95%, 550px)' })}>
+            <div
+              className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
+            >
               <label
                 htmlFor="prompt"
                 className={css({ display: 'block', marginBottom: '12px' })}
@@ -215,6 +220,7 @@ export default function Home() {
                 </button>
               </div>
             </div>
+            <div className={center()}>{isSearchExecuting && <Loading />}</div>
           </div>
           {isResultResponded && (
             <div
