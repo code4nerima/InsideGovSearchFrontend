@@ -266,7 +266,7 @@ export default function Home() {
                 ref={resultTitleRef}
                 className={css({ fontSize: '24px', fontWeight: 'normal' })}
               >
-                検索結果
+                <span>検索結果</span>
                 <span className={css({ fontSize: '1.5em', padding: '0 8px' })}>
                   {results.length}
                 </span>
