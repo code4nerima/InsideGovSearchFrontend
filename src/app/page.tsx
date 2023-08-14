@@ -1,12 +1,14 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
 
 export default function Home() {
+  const resultTitleRef = useRef<HTMLHeadingElement>(null)
+
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
   const [keyword, setKeyword] = useState('')
@@ -40,13 +42,19 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
-    if (e.key === 'Enter' && !isComposed) {
+    if (e.keyCode === 13 && !isComposed) {
       e.preventDefault()
       await handleClick()
     }
   }
 
   const excludeDisplayKeys = ['書類正式名称', 'タグ']
+
+  useEffect(() => {
+    if (isResultResponded && resultTitleRef.current) {
+      resultTitleRef.current.focus()
+    }
+  }, [isResultResponded])
 
   return (
     <div
@@ -220,14 +228,45 @@ export default function Home() {
                 </button>
               </div>
             </div>
-            <div className={center()}>{isSearchExecuting && <Loading />}</div>
+            <div
+              className={flex({
+                direction: 'column',
+                align: 'center',
+                justify: 'center',
+              })}
+            >
+              {isSearchExecuting && (
+                <>
+                  <Loading />
+                  <p
+                    aria-live="polite"
+                    className={css({
+                      position: 'absolute',
+                      width: '1px',
+                      height: '1px',
+                      padding: '0',
+                      margin: '-1px',
+                      overflow: 'hidden',
+                      clip: 'rect(0, 0, 0, 0)',
+                      whiteSpace: 'nowrap',
+                      borderWidth: '0',
+                    })}
+                  >
+                    検索中です
+                  </p>
+                </>
+              )}
+            </div>
           </div>
           {isResultResponded && (
             <div
               className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
             >
-              <h2 className={css({ fontSize: '24px', fontWeight: 'normal' })}>
-                検索結果
+              <h2
+                ref={resultTitleRef}
+                className={css({ fontSize: '24px', fontWeight: 'normal' })}
+              >
+                {`検索結果（${results.length}件）`}
               </h2>
               <p>
                 {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
