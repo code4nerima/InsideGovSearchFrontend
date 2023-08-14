@@ -266,7 +266,11 @@ export default function Home() {
                 ref={resultTitleRef}
                 className={css({ fontSize: '24px', fontWeight: 'normal' })}
               >
-                {`検索結果（${results.length}件）`}
+                検索結果
+                <span className={css({ fontSize: '1.5em', padding: '0 8px' })}>
+                  {results.length}
+                </span>
+                <span className={css({ fontSize: '0.7em' })}>件</span>
               </h2>
               <p>
                 {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
