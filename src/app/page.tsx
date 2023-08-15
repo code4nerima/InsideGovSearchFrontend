@@ -264,13 +264,18 @@ export default function Home() {
             >
               <h2
                 ref={resultTitleRef}
+                aria-label={`検索結果${results.length}件`}
                 className={css({ fontSize: '24px', fontWeight: 'normal' })}
               >
-                <span>検索結果</span>
-                <span className={css({ fontSize: '1.5em', padding: '0 8px' })}>
-                  {results.length}
+                <span aria-hidden="true">
+                  <span>検索結果</span>
+                  <span
+                    className={css({ fontSize: '1.5em', padding: '0 8px' })}
+                  >
+                    {results.length}
+                  </span>
+                  <span className={css({ fontSize: '0.7em' })}>件</span>
                 </span>
-                <span className={css({ fontSize: '0.7em' })}>件</span>
               </h2>
               <p>
                 {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
