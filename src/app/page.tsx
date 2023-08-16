@@ -308,21 +308,27 @@ export default function Home() {
                     >
                       {`${i + 1}. ${result['書類正式名称']}`}
                     </h3>
-                    <dl className={css({ fontSize: '14px' })}>
+                    <dl
+                      className={grid({
+                        columns: 2,
+                        gridTemplateColumns: 'max-content auto',
+                        fontSize: '14px',
+                      })}
+                    >
                       {Object.entries(result)
                         .filter(([k]) => !excludeDisplayKeys.includes(k))
                         .map(([key, value], j) => (
                           <React.Fragment key={`result-${j}`}>
                             <dt
                               className={css({
-                                float: 'left',
-                                marginRight: '16px',
                                 _after: { content: '" : "' },
                               })}
                             >
                               {key}
                             </dt>
-                            <dd>{value as string}</dd>
+                            <dd className={css({ margin: '0' })}>
+                              {value as string}
+                            </dd>
                           </React.Fragment>
                         ))}
                     </dl>
