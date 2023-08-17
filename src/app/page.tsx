@@ -27,6 +27,7 @@ export default function Home() {
   const handleClick = async () => {
     try {
       setIsSearchExecuting(true)
+      setSelectedPrompt('')
       const data = await fetch('/api/search', {
         method: 'POST',
         headers: {
@@ -76,9 +77,10 @@ export default function Home() {
     }
   }
 
-  const handleChangePrompt = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedPrompt(e.target.value)
     setCurrentPrompt(e.target.value)
+    await handleClick()
   }
 
   useEffect(() => {
@@ -147,9 +149,10 @@ export default function Home() {
           <div
             className={grid({
               columns: 1,
-              gridTemplateRows: isResultResponded
-                ? 'min-content min-content min-content'
-                : 'min-content min-content 60px',
+              gridTemplateRows:
+                isResultResponded && !isSearchExecuting
+                  ? 'min-content min-content min-content'
+                  : 'min-content min-content 60px',
               alignSelf: 'center',
             })}
           >
@@ -290,7 +293,7 @@ export default function Home() {
               )}
             </div>
           </div>
-          {isResultResponded && (
+          {isResultResponded && !isSearchExecuting && (
             <div
               className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
             >
