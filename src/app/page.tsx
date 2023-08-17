@@ -10,6 +10,8 @@ export default function Home() {
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
   const scaledDeviation = 50
+  const minimumItems = 1
+  const minimumScore = 3
   const excludeDisplayKeys = [
     '書類正式名称',
     'タグ',
@@ -39,21 +41,29 @@ export default function Home() {
       setIsResultResponded(false)
       setIsSuggestedPromptResponded(false)
       setSelectedPrompt('')
-      const data = await fetch('/api/search', {
+      const response = await fetch('/api/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt: currentPrompt }),
       })
-      const result = await data.json()
-      setResults(
-        result.results.results.filter(
+      const data = await response.json()
+      const results = data.results.results
+      let filteredResults = []
+      if (results.length <= minimumItems) {
+        filteredResults = results.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (result: any) => result['score'] >= minimumScore
+        )
+      } else {
+        filteredResults = results.filter(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (result: any) => result['deviationValue'] >= scaledDeviation
         )
-      )
-      setKeyword(result.results.keywords)
+      }
+      setResults(filteredResults)
+      setKeyword(data.results.keywords)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
       await suggestPrompt()
@@ -64,15 +74,15 @@ export default function Home() {
 
   const suggestPrompt = async () => {
     try {
-      const data = await fetch('/api/promptVariations', {
+      const response = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt: currentPrompt }),
       })
-      const result = await data.json()
-      setSuggestedPrompts(result.promptVariations.variations)
+      const data = await response.json()
+      setSuggestedPrompts(data.promptVariations.variations)
       setIsSuggestedPromptResponded(true)
     } catch (error) {
       console.error(error)
