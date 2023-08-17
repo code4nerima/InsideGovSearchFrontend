@@ -93,6 +93,15 @@ export default function Home() {
     await handleClick()
   }
 
+  const getConcatResults = (results: object) => {
+    const concatResults = Object.entries(results)
+      .filter(([k]) => concatDisplayKeys.includes(k))
+      .map(([, value]) => {
+        return value as string
+      })
+    return concatResults.join(' ')
+  }
+
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
       resultTitleRef.current.focus()
@@ -425,13 +434,7 @@ export default function Home() {
                       {`${i + 1}. ${result['書類正式名称']}`}
                     </h3>
                     <p className={css({ fontSize: '18px' })}>
-                      {Object.entries(result)
-                        .filter(([k]) => concatDisplayKeys.includes(k))
-                        .map(([, value], k) => (
-                          <React.Fragment key={`result-concat-${k}`}>
-                            {`${value as string} `}
-                          </React.Fragment>
-                        ))}
+                      {getConcatResults(result)}
                     </p>
                     <dl
                       className={grid({
