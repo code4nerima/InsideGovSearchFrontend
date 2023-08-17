@@ -19,6 +19,8 @@ export default function Home() {
   const [selectedPrompt, setSelectedPrompt] = useState('')
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
+  const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
+    useState(false)
   const [isComposed, setIsComposed] = useState(false)
 
   const startComposition = () => setIsComposed(true)
@@ -27,6 +29,8 @@ export default function Home() {
   const handleClick = async () => {
     try {
       setIsSearchExecuting(true)
+      setIsResultResponded(false)
+      setIsSuggestedPromptResponded(false)
       setSelectedPrompt('')
       const data = await fetch('/api/search', {
         method: 'POST',
@@ -43,18 +47,16 @@ export default function Home() {
         )
       )
       setKeyword(result.results.keywords)
+      setIsResultResponded(true)
+      setIsSearchExecuting(false)
       await suggestPrompt()
     } catch (error) {
       console.error(error)
-    } finally {
-      setIsSearchExecuting(false)
-      setIsResultResponded(true)
     }
   }
 
   const suggestPrompt = async () => {
     try {
-      // setIsSearchExecuting(true)
       const data = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
@@ -64,6 +66,7 @@ export default function Home() {
       })
       const result = await data.json()
       setSuggestedPrompts(result.promptVariations.variations)
+      setIsSuggestedPromptResponded(true)
     } catch (error) {
       console.error(error)
     }
@@ -270,7 +273,7 @@ export default function Home() {
                 justify: 'center',
               })}
             >
-              {isSearchExecuting && (
+              {isSearchExecuting && !isResultResponded && (
                 <>
                   <Loading />
                   <p
@@ -293,62 +296,81 @@ export default function Home() {
               )}
             </div>
           </div>
-          {isResultResponded && !isSearchExecuting && (
+          {isSuggestedPromptResponded ? (
+            <div
+              className={css({
+                width: 'min(95%, 550px)',
+                backgroundColor: 'nerimaPale',
+                padding: '18px 24px',
+                margin: '0 auto',
+                borderRadius: '8px',
+                color: '#000',
+              })}
+            >
+              <h2
+                className={css({
+                  display: 'inline',
+                  fontSize: '22px',
+                  fontWeight: 'normal',
+                  marginTop: '0',
+                  padding: '0 4px',
+                  background:
+                    'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
+                })}
+              >
+                もし期待する回答じゃなかったら
+              </h2>
+              <p>こちらの質問文で再度試してみてください。</p>
+              <ul>
+                {suggestedPrompts.map((prompt, i) => (
+                  <li
+                    key={`suggested-prompt-${i}`}
+                    className={css({ marginBottom: '12px' })}
+                  >
+                    <input
+                      type="radio"
+                      className={css({
+                        marginRight: '8px',
+                        cursor: 'pointer',
+                      })}
+                      id={`suggested-prompt-id-${i}`}
+                      name="suggested-prompt"
+                      value={prompt}
+                      checked={selectedPrompt === prompt}
+                      onChange={handleChangePrompt}
+                    />
+                    <label
+                      htmlFor={`suggested-prompt-id-${i}`}
+                      className={css({ cursor: 'pointer' })}
+                    >
+                      {prompt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            isResultResponded && (
+              <div
+                className={flex({
+                  align: 'center',
+                  justify: 'center',
+                  width: 'min(95%, 550px)',
+                  padding: '30px 0',
+                  margin: '0 auto',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.35)',
+                  opacity: '0.75',
+                })}
+              >
+                <Loading />
+              </div>
+            )
+          )}
+          {isResultResponded && (
             <div
               className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
             >
-              <div
-                className={css({
-                  width: '100%',
-                  backgroundColor: 'nerimaPale',
-                  padding: '18px 24px',
-                  marginBottom: '18px',
-                  borderRadius: '8px',
-                  color: '#000',
-                })}
-              >
-                <h2
-                  className={css({
-                    display: 'inline',
-                    fontSize: '22px',
-                    fontWeight: 'normal',
-                    marginTop: '0',
-                    padding: '0 4px',
-                    background:
-                      'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
-                  })}
-                >
-                  もし期待する回答じゃなかったら
-                </h2>
-                <p>こちらの質問文で再度試してみてください。</p>
-                <ul>
-                  {suggestedPrompts.map((prompt, i) => (
-                    <li
-                      key={`suggested-prompt-${i}`}
-                      className={css({ marginBottom: '12px' })}
-                    >
-                      <input
-                        type="radio"
-                        className={css({
-                          marginRight: '8px',
-                          cursor: 'pointer',
-                        })}
-                        id={`suggested-prompt-id-${i}`}
-                        name="suggested-prompt"
-                        value={prompt}
-                        checked={selectedPrompt === prompt}
-                        onChange={handleChangePrompt}
-                      />
-                      <label
-                        htmlFor={`suggested-prompt-id-${i}`}
-                        className={css({ cursor: 'pointer' })}
-                      >
-                        {prompt}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
               <h2
                 ref={resultTitleRef}
                 aria-label={`検索結果${results.length}件`}
