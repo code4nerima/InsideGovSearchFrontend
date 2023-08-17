@@ -63,7 +63,7 @@ export default function Home() {
         body: JSON.stringify({ prompt: currentPrompt }),
       })
       const result = await data.json()
-      setSuggestedPrompts(result.promptVariations)
+      setSuggestedPrompts(result.promptVariations.variations)
     } catch (error) {
       console.error(error)
     }
@@ -297,6 +297,58 @@ export default function Home() {
             <div
               className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
             >
+              <div
+                className={css({
+                  width: '100%',
+                  backgroundColor: 'nerimaPale',
+                  padding: '18px 24px',
+                  marginBottom: '18px',
+                  borderRadius: '8px',
+                  color: '#000',
+                })}
+              >
+                <h2
+                  className={css({
+                    display: 'inline',
+                    fontSize: '22px',
+                    fontWeight: 'normal',
+                    marginTop: '0',
+                    padding: '0 4px',
+                    background:
+                      'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
+                  })}
+                >
+                  もし期待する回答じゃなかったら
+                </h2>
+                <p>こちらの質問文で再度試してみてください。</p>
+                <ul>
+                  {suggestedPrompts.map((prompt, i) => (
+                    <li
+                      key={`suggested-prompt-${i}`}
+                      className={css({ marginBottom: '12px' })}
+                    >
+                      <input
+                        type="radio"
+                        className={css({
+                          marginRight: '8px',
+                          cursor: 'pointer',
+                        })}
+                        id={`suggested-prompt-id-${i}`}
+                        name="suggested-prompt"
+                        value={prompt}
+                        checked={selectedPrompt === prompt}
+                        onChange={handleChangePrompt}
+                      />
+                      <label
+                        htmlFor={`suggested-prompt-id-${i}`}
+                        className={css({ cursor: 'pointer' })}
+                      >
+                        {prompt}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <h2
                 ref={resultTitleRef}
                 aria-label={`検索結果${results.length}件`}
@@ -370,58 +422,6 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
-              <div
-                className={css({
-                  width: '100%',
-                  backgroundColor: 'nerimaPale',
-                  padding: '18px 24px',
-                  marginBottom: '18px',
-                  borderRadius: '8px',
-                  color: '#000',
-                })}
-              >
-                <h2
-                  className={css({
-                    display: 'inline',
-                    fontSize: '22px',
-                    fontWeight: 'normal',
-                    marginTop: '0',
-                    padding: '0 4px',
-                    background:
-                      'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
-                  })}
-                >
-                  もし期待する回答じゃなかったら
-                </h2>
-                <p>こちらの質問文で再度試してみてください。</p>
-                <ul>
-                  {suggestedPrompts.map((prompt, i) => (
-                    <li
-                      key={`suggested-prompt-${i}`}
-                      className={css({ marginBottom: '12px' })}
-                    >
-                      <input
-                        type="radio"
-                        className={css({
-                          marginRight: '8px',
-                          cursor: 'pointer',
-                        })}
-                        id={`suggested-prompt-id-${i}`}
-                        name="suggested-prompt"
-                        value={prompt}
-                        checked={selectedPrompt === prompt}
-                        onChange={handleChangePrompt}
-                      />
-                      <label
-                        htmlFor={`suggested-prompt-id-${i}`}
-                        className={css({ cursor: 'pointer' })}
-                      >
-                        {prompt}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           )}
         </div>
