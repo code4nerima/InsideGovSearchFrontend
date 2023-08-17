@@ -9,9 +9,14 @@ import Loading from './loading'
 export default function Home() {
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
+  const scaledDeviation = 50
+  const excludeDisplayKeys = ['書類正式名称', 'タグ', 'score', 'deviationValue']
+
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
   const [keyword, setKeyword] = useState('')
+  const [suggestedPrompts, setSuggestedPrompts] = useState([])
+  const [selectedPrompt, setSelectedPrompt] = useState('')
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isComposed, setIsComposed] = useState(false)
@@ -30,13 +35,36 @@ export default function Home() {
         body: JSON.stringify({ prompt: currentPrompt }),
       })
       const result = await data.json()
-      setResults(result.results.results)
+      setResults(
+        result.results.results.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (result: any) => result['deviationValue'] >= scaledDeviation
+        )
+      )
       setKeyword(result.results.keywords)
+      await suggestPrompt()
     } catch (error) {
       console.error(error)
     } finally {
       setIsSearchExecuting(false)
       setIsResultResponded(true)
+    }
+  }
+
+  const suggestPrompt = async () => {
+    try {
+      // setIsSearchExecuting(true)
+      const data = await fetch('/api/promptVariations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: currentPrompt }),
+      })
+      const result = await data.json()
+      setSuggestedPrompts(result.promptVariations)
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -48,7 +76,10 @@ export default function Home() {
     }
   }
 
-  const excludeDisplayKeys = ['書類正式名称', 'タグ']
+  const handleChangePrompt = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedPrompt(e.target.value)
+    setCurrentPrompt(e.target.value)
+  }
 
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
@@ -183,6 +214,7 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
+                  value={currentPrompt}
                   placeholder="例）引っ越ししたときの手続きをしたい"
                   disabled={isSearchExecuting}
                   onCompositionStart={startComposition}
@@ -335,6 +367,58 @@ export default function Home() {
                   </li>
                 ))}
               </ol>
+              <div
+                className={css({
+                  width: '100%',
+                  backgroundColor: 'nerimaPale',
+                  padding: '18px 24px',
+                  marginBottom: '18px',
+                  borderRadius: '8px',
+                  color: '#000',
+                })}
+              >
+                <h2
+                  className={css({
+                    display: 'inline',
+                    fontSize: '22px',
+                    fontWeight: 'normal',
+                    marginTop: '0',
+                    padding: '0 4px',
+                    background:
+                      'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
+                  })}
+                >
+                  もし期待する回答じゃなかったら
+                </h2>
+                <p>こちらの質問文で再度試してみてください。</p>
+                <ul>
+                  {suggestedPrompts.map((prompt, i) => (
+                    <li
+                      key={`suggested-prompt-${i}`}
+                      className={css({ marginBottom: '12px' })}
+                    >
+                      <input
+                        type="radio"
+                        className={css({
+                          marginRight: '8px',
+                          cursor: 'pointer',
+                        })}
+                        id={`suggested-prompt-id-${i}`}
+                        name="suggested-prompt"
+                        value={prompt}
+                        checked={selectedPrompt === prompt}
+                        onChange={handleChangePrompt}
+                      />
+                      <label
+                        htmlFor={`suggested-prompt-id-${i}`}
+                        className={css({ cursor: 'pointer' })}
+                      >
+                        {prompt}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           )}
         </div>
