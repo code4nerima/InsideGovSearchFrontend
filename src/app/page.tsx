@@ -10,7 +10,14 @@ export default function Home() {
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
   const scaledDeviation = 50
-  const excludeDisplayKeys = ['書類正式名称', 'タグ', 'score', 'deviationValue']
+  const excludeDisplayKeys = [
+    '書類正式名称',
+    'タグ',
+    '内線番号',
+    'score',
+    'deviationValue',
+  ]
+  const concatDisplayKeys = ['担当課', '担当係', '場所']
 
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
@@ -417,15 +424,29 @@ export default function Home() {
                     >
                       {`${i + 1}. ${result['書類正式名称']}`}
                     </h3>
+                    <p className={css({ fontSize: '18px' })}>
+                      {Object.entries(result)
+                        .filter(([k]) => concatDisplayKeys.includes(k))
+                        .map(([, value], k) => (
+                          <React.Fragment key={`result-concat-${k}`}>
+                            {`${value as string} `}
+                          </React.Fragment>
+                        ))}
+                    </p>
                     <dl
                       className={grid({
                         columns: 2,
                         gridTemplateColumns: 'max-content auto',
+                        gap: '4px',
                         fontSize: '14px',
                       })}
                     >
                       {Object.entries(result)
-                        .filter(([k]) => !excludeDisplayKeys.includes(k))
+                        .filter(
+                          ([k]) =>
+                            !excludeDisplayKeys.includes(k) &&
+                            !concatDisplayKeys.includes(k)
+                        )
                         .map(([key, value], j) => (
                           <React.Fragment key={`result-${j}`}>
                             <dt
