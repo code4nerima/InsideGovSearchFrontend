@@ -200,7 +200,7 @@ export default function Home() {
                 isResultResponded || isSuggestedPromptResponded
                   ? 'translateY(0)'
                   : 'translateY(25%)',
-              transition: 'transform 1s ease-out',
+              transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
             })}
           >
             <p
