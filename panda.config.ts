@@ -98,6 +98,7 @@ export default defineConfig({
       },
       shadows: {
         default: { value: '1px 1px 1px rgba(0, 0, 0, 0.25)' },
+        box: { value: '2px 2px 4px rgba(0, 0, 0, 0.25)' },
       },
     },
   },

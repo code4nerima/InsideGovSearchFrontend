@@ -36,6 +36,7 @@ export default function Home() {
   const endComposition = () => setIsComposed(false)
 
   const handleClick = async () => {
+    if (currentPrompt === '') return
     try {
       setIsSearchExecuting(true)
       setIsResultResponded(false)
@@ -95,6 +96,16 @@ export default function Home() {
       e.preventDefault()
       await handleClick()
     }
+  }
+
+  const handleReset = () => {
+    setCurrentPrompt('')
+    setResults([])
+    setKeyword('')
+    setSuggestedPrompts([])
+    setSelectedPrompt('')
+    setIsResultResponded(false)
+    setIsSuggestedPromptResponded(false)
   }
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,6 +227,7 @@ export default function Home() {
                   position: 'relative',
                   align: 'center',
                   justify: 'center',
+                  marginBottom: '14px',
                   _before: {
                     content: '"search"',
                     fontFamily: 'Material Symbols Rounded Variable',
@@ -236,7 +248,7 @@ export default function Home() {
                     padding: '12px 70px 12px 42px',
                     border: 'none',
                     backgroundColor: 'nerimaLight',
-                    boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.25)',
+                    boxShadow: 'box',
                     _placeholder: {
                       fontFamily: '"M PLUS 2 Variable", sans-serif',
                       fontWeight: 'thin',
@@ -291,6 +303,20 @@ export default function Home() {
                   検索
                 </button>
               </div>
+              <button
+                type="button"
+                className={css({
+                  appearance: 'none',
+                  border: 'none',
+                  background: 'nerimaPale',
+                  boxShadow: 'box',
+                  borderRadius: '4px',
+                  padding: '6px 12px',
+                })}
+                onClick={handleReset}
+              >
+                検索窓をリセット
+              </button>
             </div>
             <div
               className={flex({
