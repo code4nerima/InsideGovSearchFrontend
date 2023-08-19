@@ -312,6 +312,7 @@ export default function Home() {
                   boxShadow: 'box',
                   borderRadius: '4px',
                   padding: '6px 12px',
+                  cursor: 'pointer',
                 })}
                 onClick={handleReset}
               >
