@@ -320,7 +320,16 @@ export default function Home() {
                   borderRadius: '4px',
                   padding: '6px 12px',
                   cursor: 'pointer',
+                  _disabled: {
+                    color: '#71717a',
+                    cursor: 'not-allowed',
+                  },
                 })}
+                disabled={
+                  isSearchExecuting ||
+                  (!isSuggestedPromptResponded && isResultResponded) ||
+                  (currentPrompt === '' && !isResultResponded)
+                }
                 onClick={handleReset}
               >
                 検索窓をリセット
