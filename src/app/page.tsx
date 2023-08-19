@@ -175,6 +175,7 @@ export default function Home() {
             padding: 'min(4vw, 40px)',
             border: '1px solid white',
             borderRadius: '7vw',
+            overflow: 'hidden',
           })}
         >
           <h1
@@ -194,6 +195,12 @@ export default function Home() {
                   ? 'min-content min-content min-content'
                   : 'min-content min-content 60px',
               alignSelf: 'center',
+              height: '100%',
+              transform:
+                isResultResponded || isSuggestedPromptResponded
+                  ? 'translateY(0)'
+                  : 'translateY(25%)',
+              transition: 'transform 1s ease-out',
             })}
           >
             <p
