@@ -247,7 +247,7 @@ export default function Home() {
               >
                 <input
                   id="prompt"
-                  type="text"
+                  type="search"
                   className={css({
                     borderRadius: '3em',
                     fontSize: '16px',
@@ -332,7 +332,7 @@ export default function Home() {
                 }
                 onClick={handleReset}
               >
-                検索窓をリセット
+                検索をリセット
               </button>
             </div>
             <div
