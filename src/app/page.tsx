@@ -266,6 +266,7 @@ export default function Home() {
                   id="prompt"
                   type="search"
                   className={css({
+                    appearance: 'none',
                     borderRadius: '3em',
                     fontSize: '16px',
                     width: '100%',
