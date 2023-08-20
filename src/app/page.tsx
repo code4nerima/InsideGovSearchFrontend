@@ -318,7 +318,7 @@ export default function Home() {
                       margin: 'auto',
                     },
                     _disabled: {
-                      color: '#71717a',
+                      color: '#919191',
                       cursor: 'wait',
                     },
                   })}
@@ -333,13 +333,15 @@ export default function Home() {
                 className={css({
                   appearance: 'none',
                   border: 'none',
-                  background: 'nerimaPale',
+                  fontSize: '14px',
+                  backgroundColor: 'nerimaPale',
                   boxShadow: 'box',
                   borderRadius: '4px',
-                  padding: '6px 12px',
+                  padding: '4px 10px',
                   cursor: 'pointer',
                   _disabled: {
-                    color: '#71717a',
+                    color: '#919191',
+                    backgroundColor: '#f7f7f7',
                     cursor: 'not-allowed',
                   },
                 })}
@@ -368,7 +370,7 @@ export default function Home() {
                   align: 'center',
                   justify: 'center',
                   height:
-                    isSearchExecuting && !isResultResponded ? '60px' : '0',
+                    isSearchExecuting && !isResultResponded ? '80px' : '0',
                 })}
               >
                 {isSearchExecuting && !isResultResponded && (
