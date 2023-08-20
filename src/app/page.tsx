@@ -169,13 +169,12 @@ export default function Home() {
         <div
           className={grid({
             columns: 1,
-            gridTemplateRows: 'min-content auto min-content',
+            gridTemplateRows: 'min-content auto',
             gap: '18px',
             margin: 'min(4vw, 60px)',
             padding: 'min(4vw, 40px)',
             border: '1px solid white',
             borderRadius: '7vw',
-            overflow: 'hidden',
           })}
         >
           <h1
@@ -190,38 +189,56 @@ export default function Home() {
           <div
             className={grid({
               columns: 1,
-              gridTemplateRows:
-                isResultResponded && !isSearchExecuting
-                  ? 'min-content min-content min-content'
-                  : 'min-content min-content 60px',
+              gridTemplateRows: 'repeat(min-content)',
               alignSelf: 'center',
-              height: '100%',
-              transform:
-                isResultResponded || isSuggestedPromptResponded
-                  ? 'translateY(0)'
-                  : 'translateY(25%)',
-              transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
             })}
           >
-            <p
-              className={center({
-                fontSize: '32px',
-                textShadow: 'default',
-                animation:
-                  'FloatHorizontal 7.0s ease-in-out infinite alternate',
+            <div
+              className={css({
+                marginTop: '-30px',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
               })}
             >
-              <span
-                className={css({
+              <p
+                className={center({
+                  fontSize: '32px',
+                  textShadow: 'default',
+                  letterSpacing: '2px',
+                  margin: '16px 0',
                   animation:
-                    'FloatVertical 6.0s ease-in-out infinite alternate',
+                    'FloatHorizontal 7.0s ease-in-out infinite alternate',
                 })}
               >
-                あなたが知りたいことはなんですか？
-              </span>
-            </p>
+                <span
+                  className={css({
+                    animation:
+                      'FloatVertical 6.0s ease-in-out infinite alternate',
+                  })}
+                >
+                  あなたが知りたいことはなんですか？
+                </span>
+              </p>
+            </div>
             <div
-              className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
+              className={css({
+                position: 'sticky',
+                top: '0',
+                zIndex: '99',
+                width: 'min(97%, 650px)',
+                margin: '0 auto',
+                padding: '18px',
+                backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                borderRadius: '8px',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
             >
               <label
                 htmlFor="prompt"
@@ -336,198 +353,210 @@ export default function Home() {
               </button>
             </div>
             <div
-              className={flex({
-                direction: 'column',
-                align: 'center',
-                justify: 'center',
-              })}
-            >
-              {isSearchExecuting && !isResultResponded && (
-                <>
-                  <Loading />
-                  <p
-                    aria-live="polite"
-                    className={css({
-                      position: 'absolute',
-                      width: '1px',
-                      height: '1px',
-                      padding: '0',
-                      margin: '-1px',
-                      overflow: 'hidden',
-                      clip: 'rect(0, 0, 0, 0)',
-                      whiteSpace: 'nowrap',
-                      borderWidth: '0',
-                    })}
-                  >
-                    検索中です
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-          {isSuggestedPromptResponded ? (
-            <div
               className={css({
-                width: 'min(95%, 550px)',
-                margin: '0 auto',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
               })}
             >
+              <div
+                className={flex({
+                  direction: 'column',
+                  align: 'center',
+                  justify: 'center',
+                  height:
+                    isSearchExecuting && !isResultResponded ? '60px' : '0',
+                })}
+              >
+                {isSearchExecuting && !isResultResponded && (
+                  <>
+                    <Loading />
+                    <p
+                      aria-live="polite"
+                      className={css({
+                        position: 'absolute',
+                        width: '1px',
+                        height: '1px',
+                        padding: '0',
+                        margin: '-1px',
+                        overflow: 'hidden',
+                        clip: 'rect(0, 0, 0, 0)',
+                        whiteSpace: 'nowrap',
+                        borderWidth: '0',
+                      })}
+                    >
+                      検索中です
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+            {isSuggestedPromptResponded ? (
               <div
                 className={css({
-                  backgroundColor: 'nerimaPale',
-                  padding: '18px 24px',
-                  borderRadius: '8px',
-                  color: '#000',
+                  width: 'min(97%, 650px)',
+                  margin: '0 auto',
                 })}
               >
-                <h2
+                <div
                   className={css({
-                    display: 'inline',
-                    fontSize: '22px',
-                    fontWeight: 'normal',
-                    marginTop: '0',
-                    padding: '0 4px',
-                    background:
-                      'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
+                    backgroundColor: 'nerimaPale',
+                    padding: '18px 24px',
+                    borderRadius: '8px',
+                    color: '#000',
                   })}
                 >
-                  もし期待する回答じゃなかったら
-                </h2>
-                <p>こちらの質問文で再度試してみてください。</p>
-                <ul>
-                  {suggestedPrompts.map((prompt, i) => (
-                    <li
-                      key={`suggested-prompt-${i}`}
-                      className={css({ marginBottom: '12px' })}
-                    >
-                      <input
-                        type="radio"
-                        className={css({
-                          marginRight: '8px',
-                          cursor: 'pointer',
-                        })}
-                        id={`suggested-prompt-id-${i}`}
-                        name="suggested-prompt"
-                        value={prompt}
-                        checked={selectedPrompt === prompt}
-                        onChange={handleChangePrompt}
-                      />
-                      <label
-                        htmlFor={`suggested-prompt-id-${i}`}
-                        className={css({ cursor: 'pointer' })}
-                      >
-                        {prompt}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ) : (
-            isResultResponded && (
-              <div
-                className={flex({
-                  align: 'center',
-                  justify: 'center',
-                  width: 'min(95%, 550px)',
-                  padding: '30px 0',
-                  margin: '0 auto',
-                  borderRadius: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.35)',
-                  opacity: '0.75',
-                })}
-              >
-                <Loading />
-              </div>
-            )
-          )}
-          {isResultResponded && (
-            <div
-              className={css({ width: 'min(95%, 550px)', margin: '0 auto' })}
-            >
-              <h2
-                ref={resultTitleRef}
-                aria-label={`検索結果${results.length}件`}
-                className={css({ fontSize: '24px', fontWeight: 'normal' })}
-              >
-                <span aria-hidden="true">
-                  <span>検索結果</span>
-                  <span
-                    className={css({ fontSize: '1.5em', padding: '0 8px' })}
-                  >
-                    {results.length}
-                  </span>
-                  <span className={css({ fontSize: '0.7em' })}>件</span>
-                </span>
-              </h2>
-              <p>
-                {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
-              </p>
-              <ol
-                className={flex({
-                  flexDirection: 'column',
-                  align: 'center',
-                  justify: 'center',
-                })}
-              >
-                {results.map((result, i) => (
-                  <li
-                    key={`result-${i}`}
+                  <h2
                     className={css({
-                      width: '100%',
-                      backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                      padding: '18px 24px',
-                      marginBottom: '18px',
-                      borderRadius: '8px',
-                      color: '#000',
+                      display: 'inline',
+                      fontSize: '22px',
+                      fontWeight: 'normal',
+                      marginTop: '0',
+                      padding: '0 4px',
+                      background:
+                        'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
                     })}
                   >
-                    <h3
+                    もし期待する回答じゃなかったら
+                  </h2>
+                  <p>こちらの質問文で再度試してみてください。</p>
+                  <ul>
+                    {suggestedPrompts.map((prompt, i) => (
+                      <li
+                        key={`suggested-prompt-${i}`}
+                        className={css({ marginBottom: '12px' })}
+                      >
+                        <input
+                          type="radio"
+                          className={css({
+                            marginRight: '8px',
+                            cursor: 'pointer',
+                          })}
+                          id={`suggested-prompt-id-${i}`}
+                          name="suggested-prompt"
+                          value={prompt}
+                          checked={selectedPrompt === prompt}
+                          onChange={handleChangePrompt}
+                        />
+                        <label
+                          htmlFor={`suggested-prompt-id-${i}`}
+                          className={css({ cursor: 'pointer' })}
+                        >
+                          {prompt}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              isResultResponded && (
+                <div
+                  className={flex({
+                    align: 'center',
+                    justify: 'center',
+                    width: 'min(97%, 650px)',
+                    padding: '30px 0',
+                    margin: '0 auto',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+                    opacity: '0.75',
+                  })}
+                >
+                  <Loading />
+                </div>
+              )
+            )}
+            {isResultResponded && (
+              <div
+                className={css({ width: 'min(97%, 650px)', margin: '0 auto' })}
+              >
+                <h2
+                  ref={resultTitleRef}
+                  aria-label={`検索結果${results.length}件`}
+                  className={css({ fontSize: '24px', fontWeight: 'normal' })}
+                >
+                  <span aria-hidden="true">
+                    <span>検索結果</span>
+                    <span
+                      className={css({ fontSize: '1.5em', padding: '0 8px' })}
+                    >
+                      {results.length}
+                    </span>
+                    <span className={css({ fontSize: '0.7em' })}>件</span>
+                  </span>
+                </h2>
+                <p>
+                  {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
+                </p>
+                <ol
+                  className={flex({
+                    flexDirection: 'column',
+                    align: 'center',
+                    justify: 'center',
+                  })}
+                >
+                  {results.map((result, i) => (
+                    <li
+                      key={`result-${i}`}
                       className={css({
-                        fontSize: '22px',
-                        fontWeight: 'normal',
-                        marginTop: '0',
+                        width: '100%',
+                        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                        padding: '18px 24px',
+                        marginBottom: '18px',
+                        borderRadius: '8px',
+                        color: '#000',
                       })}
                     >
-                      {`${i + 1}. ${result['書類正式名称']}`}
-                    </h3>
-                    <p className={css({ fontSize: '18px' })}>
-                      {getConcatResults(result)}
-                    </p>
-                    <dl
-                      className={grid({
-                        columns: 2,
-                        gridTemplateColumns: 'max-content auto',
-                        gap: '4px',
-                        fontSize: '14px',
-                      })}
-                    >
-                      {Object.entries(result)
-                        .filter(
-                          ([k]) =>
-                            !excludeDisplayKeys.includes(k) &&
-                            !concatDisplayKeys.includes(k)
-                        )
-                        .map(([key, value], j) => (
-                          <React.Fragment key={`result-${j}`}>
-                            <dt
-                              className={css({
-                                _after: { content: '" : "' },
-                              })}
-                            >
-                              {key}
-                            </dt>
-                            <dd className={css({ margin: '0' })}>
-                              {value as string}
-                            </dd>
-                          </React.Fragment>
-                        ))}
-                    </dl>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
+                      <h3
+                        className={css({
+                          fontSize: '22px',
+                          fontWeight: 'normal',
+                          marginTop: '0',
+                        })}
+                      >
+                        {`${i + 1}. ${result['書類正式名称']}`}
+                      </h3>
+                      <p className={css({ fontSize: '18px' })}>
+                        {getConcatResults(result)}
+                      </p>
+                      <dl
+                        className={grid({
+                          columns: 2,
+                          gridTemplateColumns: 'max-content auto',
+                          gap: '4px',
+                          fontSize: '14px',
+                        })}
+                      >
+                        {Object.entries(result)
+                          .filter(
+                            ([k]) =>
+                              !excludeDisplayKeys.includes(k) &&
+                              !concatDisplayKeys.includes(k)
+                          )
+                          .map(([key, value], j) => (
+                            <React.Fragment key={`result-${j}`}>
+                              <dt
+                                className={css({
+                                  _after: { content: '" : "' },
+                                })}
+                              >
+                                {key}
+                              </dt>
+                              <dd className={css({ margin: '0' })}>
+                                {value as string}
+                              </dd>
+                            </React.Fragment>
+                          ))}
+                      </dl>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
+          </div>
         </div>
         <footer className={css({ padding: '0 18px' })}>
           <p>
