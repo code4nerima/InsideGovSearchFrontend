@@ -84,7 +84,11 @@ export default function Home() {
       setIsSearchExecuting(false)
       await suggestPrompt()
     } catch (error) {
-      console.error(error)
+      if (error instanceof Error) {
+        console.log('Error', error.message)
+      } else {
+        console.log('Error')
+      }
     } finally {
       setIsResultResponded(true)
       setIsSearchExecuting(false)
@@ -108,7 +112,11 @@ export default function Home() {
       const data = await res.json()
       setSuggestedPrompts(data.promptVariations.variations)
     } catch (error) {
-      console.error(error)
+      if (error instanceof Error) {
+        console.log('Error', error.message)
+      } else {
+        console.log('Error')
+      }
     } finally {
       setIsSuggestedPromptResponded(true)
     }
