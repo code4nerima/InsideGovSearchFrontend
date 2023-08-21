@@ -552,7 +552,7 @@ export default function Home() {
                       <p
                         className={css({
                           position: 'relative',
-                          fontSize: '20px',
+                          fontSize: '22px',
                           paddingLeft: '32px',
                           _before: {
                             content: '"co_present"',
@@ -580,35 +580,31 @@ export default function Home() {
                               !excludeDisplayKeys.includes(k) &&
                               !concatDisplayKeys.includes(k)
                           )
-                          .map(([key, value], j) =>
-                            /^http.?:\/\//.test(value as string) ? (
-                              <React.Fragment key={`result-${j}`}>
-                                <dt>
+                          .map(([key, value], j) => (
+                            <React.Fragment key={`result-${j}`}>
+                              <dt
+                                className={css({
+                                  _after: { content: '" : "' },
+                                })}
+                              >
+                                {key}
+                              </dt>
+                              <dd className={css({ margin: '0' })}>
+                                {/^http.?:\/\//.test(value as string) ? (
                                   <a
                                     href={value as string}
                                     target="_blank"
                                     rel="noreferrer"
+                                    className={css({ wordBreak: 'break-all' })}
                                   >
-                                    {key}
+                                    {value as string}
                                   </a>
-                                </dt>
-                                <dd></dd>
-                              </React.Fragment>
-                            ) : (
-                              <React.Fragment key={`result-${j}`}>
-                                <dt
-                                  className={css({
-                                    _after: { content: '" : "' },
-                                  })}
-                                >
-                                  {key}
-                                </dt>
-                                <dd className={css({ margin: '0' })}>
-                                  {value as string}
-                                </dd>
-                              </React.Fragment>
-                            )
-                          )}
+                                ) : (
+                                  `${value}`
+                                )}
+                              </dd>
+                            </React.Fragment>
+                          ))}
                       </dl>
                     </li>
                   ))}
@@ -646,6 +642,7 @@ export default function Home() {
                             className={css({
                               appearance: 'none',
                               border: 'none',
+                              width: '5em',
                               fontSize: '16px',
                               color: 'nerimaDark',
                               backgroundColor: 'white',
