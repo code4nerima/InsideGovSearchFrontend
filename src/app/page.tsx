@@ -486,7 +486,7 @@ export default function Home() {
               </div>
             ) : (
               isResultResponded &&
-              !isSuggestedPromptResponded && (
+              !isSearchExecuting && (
                 <div
                   className={flex({
                     align: 'center',
