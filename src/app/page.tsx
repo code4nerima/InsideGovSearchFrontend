@@ -30,6 +30,7 @@ export default function Home() {
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
   const [keyword, setKeyword] = useState('')
+  const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
   const [selectedPrompt, setSelectedPrompt] = useState('')
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
@@ -73,6 +74,7 @@ export default function Home() {
       }
       setResults(filteredResults)
       setKeyword(data.results.keywords)
+      setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
       await suggestPrompt()
@@ -113,6 +115,7 @@ export default function Home() {
         body: JSON.stringify({
           prompt: currentPrompt,
           keywords: keyword,
+          synonyms: synonym,
           answer: answer,
         }),
       })
@@ -134,6 +137,7 @@ export default function Home() {
     setCurrentPrompt('')
     setResults([])
     setKeyword('')
+    setSynonym('')
     setSuggestedPrompts([])
     setSelectedPrompt('')
     setIsResultResponded(false)
