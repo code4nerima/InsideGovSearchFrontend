@@ -86,7 +86,7 @@ export default defineConfig({
     tokens: {
       colors: {
         nerimaDark: { value: '#004B38' },
-        nerimabVivid: { value: '#4DA635' },
+        nerimaVivid: { value: '#4DA635' },
         nerimaLight: { value: '#CEE4AE' },
         nerimaPale: { value: '#E7F2D9' },
       },
