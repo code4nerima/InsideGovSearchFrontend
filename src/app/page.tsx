@@ -78,6 +78,10 @@ export default function Home() {
       await suggestPrompt()
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsResultResponded(true)
+      setIsSearchExecuting(false)
+      setIsSuggestedPromptResponded(true)
     }
   }
 
