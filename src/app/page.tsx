@@ -95,7 +95,6 @@ export default function Home() {
       })
       const data = await response.json()
       setSuggestedPrompts(data.promptVariations.variations)
-      setIsSuggestedPromptResponded(true)
     } catch (error) {
       console.error(error)
     } finally {
