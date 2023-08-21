@@ -161,9 +161,6 @@ export default function Home() {
         minHeight: '100dvh',
         backgroundColor: 'rgba(30, 58, 138, 0.25)',
         color: 'white',
-        '& a': {
-          color: 'white',
-        },
       })}
     >
       <div
@@ -565,20 +562,35 @@ export default function Home() {
                               !excludeDisplayKeys.includes(k) &&
                               !concatDisplayKeys.includes(k)
                           )
-                          .map(([key, value], j) => (
-                            <React.Fragment key={`result-${j}`}>
-                              <dt
-                                className={css({
-                                  _after: { content: '" : "' },
-                                })}
-                              >
-                                {key}
-                              </dt>
-                              <dd className={css({ margin: '0' })}>
-                                {value as string}
-                              </dd>
-                            </React.Fragment>
-                          ))}
+                          .map(([key, value], j) =>
+                            /^http.?:\/\//.test(value as string) ? (
+                              <React.Fragment key={`result-${j}`}>
+                                <dt>
+                                  <a
+                                    href={value as string}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {key}
+                                  </a>
+                                </dt>
+                                <dd></dd>
+                              </React.Fragment>
+                            ) : (
+                              <React.Fragment key={`result-${j}`}>
+                                <dt
+                                  className={css({
+                                    _after: { content: '" : "' },
+                                  })}
+                                >
+                                  {key}
+                                </dt>
+                                <dd className={css({ margin: '0' })}>
+                                  {value as string}
+                                </dd>
+                              </React.Fragment>
+                            )
+                          )}
                       </dl>
                     </li>
                   ))}
@@ -647,7 +659,9 @@ export default function Home() {
             )}
           </div>
         </div>
-        <footer className={css({ padding: '0 18px' })}>
+        <footer
+          className={css({ padding: '0 18px', '& a': { color: 'white' } })}
+        >
           <p>
             航空写真、練馬区、
             <Link href="https://creativecommons.org/licenses/by/4.0/deed.ja">
