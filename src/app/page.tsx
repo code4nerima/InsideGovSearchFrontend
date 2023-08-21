@@ -13,6 +13,7 @@ export default function Home() {
   const minimumItems = 1
   const minimumScore = 3
   const excludeDisplayKeys = [
+    '手続名称',
     '書類正式名称',
     'タグ',
     '内線番号',
@@ -46,6 +47,7 @@ export default function Home() {
       setIsSearchExecuting(true)
       setIsResultResponded(false)
       setIsSuggestedPromptResponded(false)
+      setIsAnswerResponded(false)
       setSelectedPrompt('')
       const response = await fetch('/api/search', {
         method: 'POST',
@@ -540,12 +542,27 @@ export default function Home() {
                         className={css({
                           fontSize: '22px',
                           fontWeight: 'normal',
-                          marginTop: '0',
+                          margin: '0',
                         })}
                       >
-                        {`${i + 1}. ${result['書類正式名称']}`}
+                        {`${i + 1}. ${result['手続名称']}`}
                       </h3>
-                      <p className={css({ fontSize: '18px' })}>
+                      <p>{`${result['書類正式名称']}`}</p>
+                      <p
+                        className={css({
+                          position: 'relative',
+                          fontSize: '20px',
+                          paddingLeft: '32px',
+                          _before: {
+                            content: '"co_present"',
+                            fontFamily: 'Material Symbols Rounded Variable',
+                            fontSize: '22px',
+                            color: 'nerimaDark',
+                            position: 'absolute',
+                            left: '0',
+                          },
+                        })}
+                      >
                         {getConcatResults(result)}
                       </p>
                       <dl
