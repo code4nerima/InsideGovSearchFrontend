@@ -551,17 +551,7 @@ export default function Home() {
                       <p>{`${result['書類正式名称']}`}</p>
                       <p
                         className={css({
-                          position: 'relative',
                           fontSize: '22px',
-                          paddingLeft: '32px',
-                          _before: {
-                            content: '"co_present"',
-                            fontFamily: 'Material Symbols Rounded Variable',
-                            fontSize: '22px',
-                            color: 'nerimaDark',
-                            position: 'absolute',
-                            left: '0',
-                          },
                         })}
                       >
                         {getConcatResults(result)}
