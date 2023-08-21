@@ -42,7 +42,7 @@ export default function Home() {
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
 
-  const handleSearch = async () => {
+  const handleSearch = async (prompt: string) => {
     if (currentPrompt === '') return
     try {
       setIsSearchExecuting(true)
@@ -55,7 +55,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: currentPrompt }),
+        body: JSON.stringify({ prompt: prompt }),
       })
       const data = await response.json()
       const results = data.results.results
@@ -122,7 +122,7 @@ export default function Home() {
   const handleKeyDown = async (e: any) => {
     if (e.keyCode === 13 && !isComposed) {
       e.preventDefault()
-      await handleSearch()
+      await handleSearch(currentPrompt)
     }
   }
 
@@ -140,7 +140,7 @@ export default function Home() {
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedPrompt(e.target.value)
     setCurrentPrompt(e.target.value)
-    await handleSearch()
+    await handleSearch(e.target.value)
   }
 
   const getConcatResults = (results: object) => {
@@ -349,7 +349,7 @@ export default function Home() {
                     },
                   })}
                   disabled={isSearchExecuting}
-                  onClick={handleSearch}
+                  onClick={() => handleSearch(currentPrompt)}
                 >
                   検索
                 </button>
