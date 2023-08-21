@@ -169,7 +169,7 @@ export default function Home() {
       <div
         className={css({
           position: 'fixed',
-          height: '100dvh',
+          height: '100%',
           width: '100vw',
           overflow: 'hidden',
           zIndex: '-1',
