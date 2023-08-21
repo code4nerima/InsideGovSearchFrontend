@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 interface CustomRequest extends NextRequest {
   prompt?: string
-  keywords: string[]
+  keywords: string
   answer: number
 }
 
@@ -19,7 +19,7 @@ export async function POST(req: CustomRequest) {
       'Content-Type': 'application/json',
       Authorization: process.env.API_AUTH_KEY,
     },
-    body: JSON.stringify({ prompt, keywords, answer }),
+    body: JSON.stringify({ prompt, keywords, answer, synonyms: keywords }),
   })
   const result = await data.json()
 
