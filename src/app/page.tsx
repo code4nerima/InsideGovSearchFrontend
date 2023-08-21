@@ -41,6 +41,7 @@ export default function Home() {
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
   const [isComposed, setIsComposed] = useState(false)
+  const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
   const [isAnswerResponded, setIsAnswerResponded] = useState(false)
 
   const startComposition = () => setIsComposed(true)
@@ -128,6 +129,7 @@ export default function Home() {
   const sendFeedback = async (answer: number) => {
     if (answer === undefined) return
     try {
+      setIsAnswerSendExecuting(true)
       await fetch('/api/upload', {
         method: 'POST',
         headers: {
@@ -143,6 +145,8 @@ export default function Home() {
       setIsAnswerResponded(true)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsAnswerSendExecuting(false)
     }
   }
 
@@ -706,7 +710,11 @@ export default function Home() {
                               borderRadius: '4px',
                               padding: '6px 12px',
                               cursor: 'pointer',
+                              _disabled: {
+                                cursor: 'wait',
+                              },
                             })}
+                            disabled={isAnswerSendExecuting}
                             onClick={async () => {
                               try {
                                 await sendFeedback(option.value)
