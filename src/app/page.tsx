@@ -518,7 +518,7 @@ export default function Home() {
                   </span>
                 </h2>
                 <p>
-                  {`「${keyword}」で検索した結果、${results.length}件見つかりました。`}
+                  {`「${keyword}」で検索した結果、${results.length}件の手続きが見つかりました。受付窓口へお越しください。`}
                 </p>
                 <ol
                   className={flex({
