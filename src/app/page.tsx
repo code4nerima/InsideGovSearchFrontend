@@ -522,9 +522,11 @@ export default function Home() {
                     <span className={css({ fontSize: '0.7em' })}>件</span>
                   </span>
                 </h2>
-                <p>
-                  {`「${keyword}」で検索した結果、${results.length}件の手続きが見つかりました。受付窓口へお越しください。`}
-                </p>
+                {results.length > 0 && (
+                  <p>
+                    {`「${keyword}」で検索した結果、${results.length}件の手続きが見つかりました。受付窓口へお越しください。`}
+                  </p>
+                )}
                 <ol
                   className={flex({
                     flexDirection: 'column',
