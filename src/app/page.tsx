@@ -1,12 +1,15 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
 
 export default function Home() {
+  const searchParams = useSearchParams()
+  const debug = searchParams.get('debug')
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
   const scaledDeviation = 50
@@ -545,7 +548,11 @@ export default function Home() {
                 </h2>
                 {results.length > 0 && (
                   <p>
-                    {`「${keyword}」で検索した結果、${results.length}件の手続きが見つかりました。受付窓口へお越しください。`}
+                    {`「${keyword}」${
+                      debug === '1' ? `「${synonym}」` : ''
+                    }で検索した結果、${
+                      results.length
+                    }件の手続きが見つかりました。受付窓口へお越しください。`}
                   </p>
                 )}
                 <ol
