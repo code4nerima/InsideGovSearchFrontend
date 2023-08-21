@@ -166,7 +166,7 @@ export default function Home() {
   return (
     <div
       className={css({
-        minHeight: '100dvh',
+        minHeight: '100%',
         backgroundColor: 'rgba(30, 58, 138, 0.25)',
         color: 'white',
       })}
