@@ -15,6 +15,7 @@ export default function Home() {
   const excludeDisplayKeys = [
     '手続名称',
     '書類正式名称',
+    '書類略称',
     'タグ',
     '内線番号',
     'score',
