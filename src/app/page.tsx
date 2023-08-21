@@ -51,14 +51,19 @@ export default function Home() {
       setIsSuggestedPromptResponded(false)
       setIsAnswerResponded(false)
       setSelectedPrompt('')
-      const response = await fetch('/api/search', {
+      const res = await fetch('/api/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt: prompt }),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText)
+        }
+        return res
       })
-      const data = await response.json()
+      const data = await res.json()
       const results = data.results.results
       let filteredResults = []
       if (results.length <= minimumItems) {
@@ -88,14 +93,19 @@ export default function Home() {
 
   const suggestPrompt = async () => {
     try {
-      const response = await fetch('/api/promptVariations', {
+      const res = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ prompt: currentPrompt }),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText)
+        }
+        return res
       })
-      const data = await response.json()
+      const data = await res.json()
       setSuggestedPrompts(data.promptVariations.variations)
     } catch (error) {
       console.error(error)
