@@ -543,17 +543,49 @@ export default function Home() {
                         className={css({
                           fontSize: '22px',
                           fontWeight: 'normal',
-                          margin: '0',
+                          marginTop: '0',
                         })}
                       >
                         {`${i + 1}. ${result['手続名称']}`}
                       </h3>
-                      <p>{`${result['書類正式名称']}`}</p>
                       <p
                         className={css({
-                          fontSize: '22px',
+                          display: 'inline-flex',
+                          fontSize: '16px',
+                          marginTop: '0',
                         })}
                       >
+                        <span
+                          className={css({
+                            fontSize: '18px',
+                            fontFamily: 'Material Icons Round',
+                            color: 'nerimaDark',
+                            paddingRight: '8px',
+                          })}
+                          aria-hidden="true"
+                        >
+                          edit
+                        </span>
+                        {`${result['書類正式名称']}`}
+                      </p>
+                      <p
+                        className={css({
+                          display: 'inline-flex',
+                          fontSize: '22px',
+                          marginTop: '0',
+                        })}
+                      >
+                        <span
+                          className={css({
+                            fontSize: '24px',
+                            fontFamily: 'Material Icons Round',
+                            color: 'nerimaDark',
+                            paddingRight: '12px',
+                          })}
+                          aria-hidden="true"
+                        >
+                          co_present
+                        </span>
                         {getConcatResults(result)}
                       </p>
                       <dl
@@ -562,6 +594,7 @@ export default function Home() {
                           gridTemplateColumns: 'max-content auto',
                           gap: '4px',
                           fontSize: '14px',
+                          margin: '0',
                         })}
                       >
                         {Object.entries(result)
