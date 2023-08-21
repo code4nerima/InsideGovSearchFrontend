@@ -561,7 +561,7 @@ export default function Home() {
                             color: 'nerimaDark',
                             paddingRight: '8px',
                           })}
-                          aria-hidden="true"
+                          aria-label="届出名称"
                         >
                           edit
                         </span>
@@ -580,7 +580,7 @@ export default function Home() {
                             color: 'nerimaDark',
                             paddingRight: '12px',
                           })}
-                          aria-hidden="true"
+                          aria-label="受付窓口"
                         >
                           co_present
                         </span>
