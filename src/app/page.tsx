@@ -81,7 +81,6 @@ export default function Home() {
     } finally {
       setIsResultResponded(true)
       setIsSearchExecuting(false)
-      setIsSuggestedPromptResponded(true)
     }
   }
 
@@ -99,6 +98,8 @@ export default function Home() {
       setIsSuggestedPromptResponded(true)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsSuggestedPromptResponded(true)
     }
   }
 
