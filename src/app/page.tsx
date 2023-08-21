@@ -20,6 +20,10 @@ export default function Home() {
     'deviationValue',
   ]
   const concatDisplayKeys = ['担当課', '担当係', '場所']
+  const answerOptions = [
+    { value: 1, label: 'はい' },
+    { value: 0, label: 'いいえ' },
+  ]
 
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
@@ -31,6 +35,7 @@ export default function Home() {
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
   const [isComposed, setIsComposed] = useState(false)
+  const [isAnswerResponded, setIsAnswerResponded] = useState(false)
 
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
@@ -90,6 +95,26 @@ export default function Home() {
     }
   }
 
+  const sendFeedback = async (answer: number) => {
+    if (answer === undefined) return
+    try {
+      await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: currentPrompt,
+          keywords: keyword,
+          answer: answer,
+        }),
+      })
+      setIsAnswerResponded(true)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
     if (e.keyCode === 13 && !isComposed) {
@@ -106,6 +131,7 @@ export default function Home() {
     setSelectedPrompt('')
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
+    setIsAnswerResponded(false)
   }
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -557,6 +583,66 @@ export default function Home() {
                     </li>
                   ))}
                 </ol>
+                <div
+                  className={css({
+                    backgroundColor: 'nerimaPale',
+                    padding: '18px 24px',
+                    borderRadius: '8px',
+                    color: '#000',
+                    marginTop: '24px',
+                  })}
+                >
+                  <h2
+                    className={css({
+                      fontSize: '16px',
+                      fontWeight: 'normal',
+                      marginTop: '0',
+                    })}
+                  >
+                    知りたいことは見つかりましたか？
+                  </h2>
+                  <p className={css({ fontSize: '14px' })}>
+                    ※回答いただくと検索で入力いただいた文章は学習に活用されます。
+                  </p>
+                  {!isAnswerResponded ? (
+                    <ul className={flex({ justify: 'center' })}>
+                      {answerOptions.map((option, i) => (
+                        <li
+                          key={`answer-option-${i}`}
+                          className={css({ margin: '0 16px' })}
+                        >
+                          <button
+                            type="button"
+                            className={css({
+                              appearance: 'none',
+                              border: 'none',
+                              fontSize: '16px',
+                              color: 'nerimaDark',
+                              backgroundColor: 'white',
+                              boxShadow: 'box',
+                              borderRadius: '4px',
+                              padding: '6px 12px',
+                              cursor: 'pointer',
+                            })}
+                            onClick={async () => {
+                              try {
+                                await sendFeedback(option.value)
+                              } catch (error) {
+                                console.error('Error sending feedback:', error)
+                              }
+                            }}
+                          >
+                            {option.label}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className={css({ marginBottom: '0' })}>
+                      ご回答ありがとうございました。
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>
