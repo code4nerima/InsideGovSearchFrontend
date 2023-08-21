@@ -549,8 +549,7 @@ export default function Home() {
                         {`${i + 1}. ${result['手続名称']}`}
                       </h3>
                       <p
-                        className={css({
-                          display: 'inline-flex',
+                        className={flex({
                           fontSize: '16px',
                           marginTop: '0',
                         })}
@@ -569,8 +568,7 @@ export default function Home() {
                         {`${result['書類正式名称']}`}
                       </p>
                       <p
-                        className={css({
-                          display: 'inline-flex',
+                        className={flex({
                           fontSize: '22px',
                           marginTop: '0',
                         })}
