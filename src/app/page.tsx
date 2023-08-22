@@ -6,7 +6,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
-import { getConcatResults } from './utils'
+import {
+  GroupByKeyObject,
+  getConcatResults,
+  getGroupByKeysRecursive,
+} from './utils'
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -16,6 +20,7 @@ export default function Home() {
   const scaledDeviation = 50
   const minimumItems = 1
   const minimumScore = 3
+  const groupByKeys = ['担当課', '担当係']
   const excludeDisplayKeys = [
     '手続名称',
     '書類正式名称',
@@ -33,6 +38,9 @@ export default function Home() {
 
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
+  const [resultsGroupBy, setResultsGroupBy] = useState<Array<GroupByKeyObject>>(
+    []
+  )
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
@@ -83,6 +91,8 @@ export default function Home() {
         )
       }
       setResults(filteredResults)
+      const groupBy = getGroupByKeysRecursive(filteredResults, groupByKeys)
+      setResultsGroupBy(groupBy)
       setKeyword(data.results.keywords)
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
@@ -162,6 +172,7 @@ export default function Home() {
   const handleReset = () => {
     setCurrentPrompt('')
     setResults([])
+    setResultsGroupBy([])
     setKeyword('')
     setSynonym('')
     setSuggestedPrompts([])
@@ -556,6 +567,146 @@ export default function Home() {
                     }件の手続きが見つかりました。受付窓口へお越しください。`}
                   </p>
                 )}
+                <div
+                  className={css({
+                    color: '#000',
+                    padding: '18px 24px 18px 0',
+                    borderRadius: '8px',
+                    backgroundColor: 'white',
+                    marginBottom: '42px',
+                  })}
+                >
+                  <h3
+                    className={css({
+                      fontSize: '22px',
+                      fontWeight: 'normal',
+                      margin: '0 0 0 24px',
+                    })}
+                  >
+                    とりあえず受付窓口に行ってみる
+                  </h3>
+                  <ul
+                    className={css({
+                      paddingBottom: '1em',
+                      _before: {
+                        content: '""',
+                        display: 'block',
+                        width: '0',
+                        position: 'absolute',
+                        top: '0',
+                        bottom: '0',
+                        left: '0',
+                        borderLeft: '1px solid',
+                        backgroundColor: 'white',
+                      },
+                    })}
+                  >
+                    {resultsGroupBy.map((resultGroup, i) => (
+                      <li
+                        key={`result-group-${i}`}
+                        className={css({
+                          margin: '0',
+                          padding: '1em 0 0 1.5em',
+                          position: 'relative',
+                          _before: {
+                            content: '""',
+                            display: 'block',
+                            height: '100%',
+                            left: '0',
+                            marginTop: '1em',
+                            position: 'absolute',
+                            top: '1.5em',
+                            width: '1.5em',
+                          },
+                          _last: {
+                            _before: {
+                              content: '""',
+                              bottom: '0',
+                              height: 'auto',
+                              top: '1.5em',
+                              backgroundColor: 'white',
+                            },
+                          },
+                        })}
+                      >
+                        <div
+                          className={css({
+                            borderRadius: '5px',
+                            border: '1px solid #afafaf',
+                            backgroundColor: 'white',
+                            margin: '0',
+                            padding: '0.5em',
+                            maxWidth: '14em',
+                          })}
+                        >
+                          {resultGroup[groupByKeys[0]]}
+                        </div>
+                        <ul
+                          className={css({
+                            margin: '0 0 0 2em',
+                            padding: '0',
+                            position: 'relative',
+                            _before: {
+                              content: '""',
+                              display: 'block',
+                              width: '0',
+                              position: 'absolute',
+                              top: '0',
+                              bottom: '0',
+                              left: '0',
+                              borderLeft: '1px solid',
+                              backgroundColor: 'white',
+                            },
+                          })}
+                        >
+                          {resultGroup.data.map((item, j) => (
+                            <li
+                              key={`result-group-item-${j}`}
+                              className={css({
+                                margin: '0',
+                                padding: '1em 0 0 1.5em',
+                                position: 'relative',
+                                _before: {
+                                  content: '""',
+                                  borderTop: '1px solid',
+                                  display: 'block',
+                                  height: '100%',
+                                  left: '0',
+                                  marginTop: '1em',
+                                  position: 'absolute',
+                                  top: '1.5em',
+                                  width: '1.5em',
+                                },
+                                _last: {
+                                  _before: {
+                                    content: '""',
+                                    bottom: '0',
+                                    height: 'auto',
+                                    top: '1.5em',
+                                    backgroundColor: 'white',
+                                  },
+                                },
+                              })}
+                            >
+                              <div
+                                className={css({
+                                  borderRadius: '5px',
+                                  border: '1px solid #afafaf',
+                                  backgroundColor: 'white',
+                                  margin: '0',
+                                  padding: '0.5em',
+                                  maxWidth: '20em',
+                                })}
+                              >{`${item[groupByKeys[1]]}（${
+                                item.data[0]['場所']
+                              }）`}</div>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 <ol
                   className={flex({
                     flexDirection: 'column',
@@ -568,7 +719,7 @@ export default function Home() {
                       key={`result-${i}`}
                       className={css({
                         width: '100%',
-                        backgroundColor: 'rgba(255, 255, 255, 0.75)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
                         padding: '18px 24px',
                         marginBottom: '18px',
                         borderRadius: '8px',
