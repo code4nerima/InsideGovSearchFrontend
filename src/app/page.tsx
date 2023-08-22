@@ -539,6 +539,7 @@ export default function Home() {
                   ref={resultTitleRef}
                   aria-label={`検索結果${results.length}件`}
                   className={css({ fontSize: '24px', fontWeight: 'normal' })}
+                  tabIndex={0}
                 >
                   <span aria-hidden="true">
                     <span>検索結果</span>
