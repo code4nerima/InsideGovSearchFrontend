@@ -278,7 +278,7 @@ export default function Home() {
                       'FloatVertical 6.0s ease-in-out infinite alternate',
                   })}
                 >
-                  あなたが知りたいことはなんですか？
+                  ご用件はなんですか？
                 </span>
               </p>
             </div>
@@ -303,7 +303,7 @@ export default function Home() {
                 htmlFor="prompt"
                 className={css({ display: 'block', marginBottom: '12px' })}
               >
-                知りたいことを文章で書いてみてください
+                用件を文章で書いてみてください
               </label>
               <div
                 className={flex({
@@ -481,7 +481,7 @@ export default function Home() {
                         'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
                     })}
                   >
-                    もし期待する回答じゃなかったら
+                    もし行き先が見つからなかったら
                   </h2>
                   <p>こちらの質問文で再度試してみてください。</p>
                   <ul>
@@ -686,7 +686,7 @@ export default function Home() {
                       marginTop: '0',
                     })}
                   >
-                    知りたいことは見つかりましたか？
+                    行き先は見つかりましたか？
                   </h2>
                   <p className={css({ fontSize: '14px' })}>
                     ※回答いただくと検索で入力いただいた文章は学習に活用されます。
