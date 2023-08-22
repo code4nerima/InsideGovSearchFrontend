@@ -671,6 +671,7 @@ export default function Home() {
                 </ol>
                 <div
                   className={css({
+                    position: 'relative',
                     backgroundColor: 'nerimaPale',
                     padding: '18px 24px',
                     borderRadius: '8px',
@@ -732,6 +733,24 @@ export default function Home() {
                     <p className={css({ marginBottom: '0' })}>
                       ご回答ありがとうございました。
                     </p>
+                  )}
+                  {isAnswerSendExecuting && (
+                    <div
+                      className={flex({
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                        borderRadius: '8px',
+                        justify: 'center',
+                        align: 'center',
+                        zIndex: '1',
+                      })}
+                    >
+                      <Loading />
+                    </div>
                   )}
                 </div>
               </div>
