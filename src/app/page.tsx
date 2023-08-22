@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
+import { getConcatResults } from './utils'
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -174,15 +175,6 @@ export default function Home() {
     setSelectedPrompt(e.target.value)
     setCurrentPrompt(e.target.value)
     await handleSearch(e.target.value)
-  }
-
-  const getConcatResults = (results: object) => {
-    const concatResults = Object.entries(results)
-      .filter(([k]) => concatDisplayKeys.includes(k))
-      .map(([, value]) => {
-        return value as string
-      })
-    return concatResults.join(' ')
   }
 
   useEffect(() => {
@@ -628,7 +620,7 @@ export default function Home() {
                         >
                           co_present
                         </span>
-                        {getConcatResults(result)}
+                        {getConcatResults(result, concatDisplayKeys)}
                       </p>
                       <dl
                         className={grid({
