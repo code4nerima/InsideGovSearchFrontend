@@ -538,7 +538,11 @@ export default function Home() {
                 <h2
                   ref={resultTitleRef}
                   aria-label={`検索結果${results.length}件`}
-                  className={css({ fontSize: '24px', fontWeight: 'normal' })}
+                  className={css({
+                    fontSize: '24px',
+                    fontWeight: 'normal',
+                    _focusVisible: { outline: 'none' },
+                  })}
                   tabIndex={0}
                 >
                   <span aria-hidden="true">
