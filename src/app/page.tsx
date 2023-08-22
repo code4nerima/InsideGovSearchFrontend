@@ -567,345 +567,356 @@ export default function Home() {
                     }件の手続きが見つかりました。受付窓口へお越しください。`}
                   </p>
                 )}
-                <div
-                  className={css({
-                    color: '#000',
-                    padding: '18px 24px 18px 0',
-                    borderRadius: '8px',
-                    backgroundColor: 'white',
-                    marginBottom: '42px',
-                  })}
-                >
-                  <h3
+                {results.length > 0 && (
+                  <div
                     className={css({
-                      fontSize: '22px',
-                      fontWeight: 'normal',
-                      margin: '0 0 0 24px',
+                      color: '#000',
+                      padding: '18px 24px 18px 0',
+                      borderRadius: '8px',
+                      backgroundColor: 'white',
+                      marginBottom: '42px',
                     })}
                   >
-                    とりあえず受付窓口に行ってみる
-                  </h3>
-                  <ul
-                    className={css({
-                      paddingBottom: '1em',
-                      _before: {
-                        content: '""',
-                        display: 'block',
-                        width: '0',
-                        position: 'absolute',
-                        top: '0',
-                        bottom: '0',
-                        left: '0',
-                        borderLeft: '1px solid',
-                        backgroundColor: 'white',
-                      },
-                    })}
-                  >
-                    {resultsGroupBy.map((resultGroup, i) => (
-                      <li
-                        key={`result-group-${i}`}
-                        className={css({
-                          margin: '0',
-                          padding: '1em 0 0 1.5em',
-                          position: 'relative',
-                          _before: {
-                            content: '""',
-                            display: 'block',
-                            height: '100%',
-                            left: '0',
-                            marginTop: '1em',
-                            position: 'absolute',
-                            top: '1.5em',
-                            width: '1.5em',
-                          },
-                          _last: {
-                            _before: {
-                              content: '""',
-                              bottom: '0',
-                              height: 'auto',
-                              top: '1.5em',
-                              backgroundColor: 'white',
-                            },
-                          },
-                        })}
-                      >
-                        <div
+                    <h3
+                      className={css({
+                        fontSize: '22px',
+                        fontWeight: 'normal',
+                        margin: '0 0 0 24px',
+                      })}
+                    >
+                      とりあえず受付窓口に行ってみる
+                    </h3>
+                    <ul
+                      className={css({
+                        paddingBottom: '1em',
+                        _before: {
+                          content: '""',
+                          display: 'block',
+                          width: '0',
+                          position: 'absolute',
+                          top: '0',
+                          bottom: '0',
+                          left: '0',
+                          borderLeft: '1px solid',
+                          backgroundColor: 'white',
+                        },
+                      })}
+                    >
+                      {resultsGroupBy.map((resultGroup, i) => (
+                        <li
+                          key={`result-group-${i}`}
                           className={css({
-                            borderRadius: '5px',
-                            border: '1px solid #afafaf',
-                            backgroundColor: 'white',
                             margin: '0',
-                            padding: '0.5em',
-                            maxWidth: '14em',
-                          })}
-                        >
-                          {resultGroup[groupByKeys[0]]}
-                        </div>
-                        <ul
-                          className={css({
-                            margin: '0 0 0 2em',
-                            padding: '0',
+                            padding: '1em 0 0 1.5em',
                             position: 'relative',
                             _before: {
                               content: '""',
                               display: 'block',
-                              width: '0',
-                              position: 'absolute',
-                              top: '0',
-                              bottom: '0',
+                              height: '100%',
                               left: '0',
-                              borderLeft: '1px solid',
-                              backgroundColor: 'white',
+                              marginTop: '1em',
+                              position: 'absolute',
+                              top: '1.5em',
+                              width: '1.5em',
+                            },
+                            _last: {
+                              _before: {
+                                content: '""',
+                                bottom: '0',
+                                height: 'auto',
+                                top: '1.5em',
+                                backgroundColor: 'white',
+                              },
                             },
                           })}
                         >
-                          {resultGroup.data.map((item, j) => (
-                            <li
-                              key={`result-group-item-${j}`}
-                              className={css({
-                                margin: '0',
-                                padding: '1em 0 0 1.5em',
-                                position: 'relative',
-                                _before: {
-                                  content: '""',
-                                  borderTop: '1px solid',
-                                  display: 'block',
-                                  height: '100%',
-                                  left: '0',
-                                  marginTop: '1em',
-                                  position: 'absolute',
-                                  top: '1.5em',
-                                  width: '1.5em',
-                                },
-                                _last: {
-                                  _before: {
-                                    content: '""',
-                                    bottom: '0',
-                                    height: 'auto',
-                                    top: '1.5em',
-                                    backgroundColor: 'white',
-                                  },
-                                },
-                              })}
-                            >
-                              <div
-                                className={css({
-                                  borderRadius: '5px',
-                                  border: '1px solid #afafaf',
-                                  backgroundColor: 'white',
-                                  margin: '0',
-                                  padding: '0.5em',
-                                  maxWidth: '20em',
-                                })}
-                              >{`${item[groupByKeys[1]]}（${
-                                item.data[0]['場所']
-                              }）`}</div>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <ol
-                  className={flex({
-                    flexDirection: 'column',
-                    align: 'center',
-                    justify: 'center',
-                  })}
-                >
-                  {results.map((result, i) => (
-                    <li
-                      key={`result-${i}`}
-                      className={css({
-                        width: '100%',
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                        padding: '18px 24px',
-                        marginBottom: '18px',
-                        borderRadius: '8px',
-                        color: '#000',
-                      })}
-                    >
-                      <h3
-                        className={css({
-                          fontSize: '22px',
-                          fontWeight: 'normal',
-                          marginTop: '0',
-                        })}
-                      >
-                        {`${i + 1}. ${result['手続名称']}`}
-                      </h3>
-                      <p
-                        className={flex({
-                          fontSize: '16px',
-                          marginTop: '0',
-                        })}
-                      >
-                        <span
-                          className={css({
-                            fontSize: '18px',
-                            fontFamily: 'Material Icons Round',
-                            color: 'nerimaDark',
-                            paddingRight: '8px',
-                          })}
-                          aria-label="届出名称"
-                        >
-                          edit
-                        </span>
-                        {`${result['書類正式名称']}`}
-                      </p>
-                      <p
-                        className={flex({
-                          fontSize: '22px',
-                          marginTop: '0',
-                        })}
-                      >
-                        <span
-                          className={css({
-                            fontSize: '24px',
-                            fontFamily: 'Material Icons Round',
-                            color: 'nerimaDark',
-                            paddingRight: '12px',
-                          })}
-                          aria-label="受付窓口"
-                        >
-                          co_present
-                        </span>
-                        {getConcatResults(result, concatDisplayKeys)}
-                      </p>
-                      <dl
-                        className={grid({
-                          columns: 2,
-                          gridTemplateColumns: 'max-content auto',
-                          gap: '4px',
-                          fontSize: '14px',
-                          margin: '0',
-                        })}
-                      >
-                        {Object.entries(result)
-                          .filter(
-                            ([k]) =>
-                              !excludeDisplayKeys.includes(k) &&
-                              !concatDisplayKeys.includes(k)
-                          )
-                          .map(([key, value], j) => (
-                            <React.Fragment key={`result-${j}`}>
-                              <dt
-                                className={css({
-                                  _after: { content: '" : "' },
-                                })}
-                              >
-                                {key}
-                              </dt>
-                              <dd
-                                className={css({
-                                  margin: '0',
-                                  whiteSpace: 'pre-wrap',
-                                })}
-                              >
-                                {/^http.?:\/\//.test(value as string) ? (
-                                  <a
-                                    href={value as string}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className={css({ wordBreak: 'break-all' })}
-                                  >
-                                    {value as string}
-                                  </a>
-                                ) : (
-                                  `${value}`
-                                )}
-                              </dd>
-                            </React.Fragment>
-                          ))}
-                      </dl>
-                    </li>
-                  ))}
-                </ol>
-                <div
-                  className={css({
-                    position: 'relative',
-                    backgroundColor: 'nerimaPale',
-                    padding: '18px 24px',
-                    borderRadius: '8px',
-                    color: '#000',
-                    marginTop: '24px',
-                  })}
-                >
-                  <h2
-                    className={css({
-                      fontSize: '16px',
-                      fontWeight: 'normal',
-                      marginTop: '0',
-                    })}
-                  >
-                    行き先は見つかりましたか？
-                  </h2>
-                  <p className={css({ fontSize: '14px' })}>
-                    ※回答いただくと検索で入力いただいた文章は学習に活用されます。
-                  </p>
-                  {!isAnswerResponded ? (
-                    <ul className={flex({ justify: 'center' })}>
-                      {answerOptions.map((option, i) => (
-                        <li
-                          key={`answer-option-${i}`}
-                          className={css({ margin: '0 16px' })}
-                        >
-                          <button
-                            type="button"
+                          <div
                             className={css({
-                              appearance: 'none',
-                              border: 'none',
-                              width: '5em',
-                              fontSize: '16px',
-                              color: 'nerimaDark',
+                              borderRadius: '5px',
+                              border: '1px solid #afafaf',
                               backgroundColor: 'white',
-                              boxShadow: 'box',
-                              borderRadius: '4px',
-                              padding: '6px 12px',
-                              cursor: 'pointer',
-                              _disabled: {
-                                cursor: 'wait',
+                              margin: '0',
+                              padding: '0.5em',
+                              maxWidth: '14em',
+                            })}
+                          >
+                            {resultGroup[groupByKeys[0]]}
+                          </div>
+                          <ul
+                            className={css({
+                              margin: '0 0 0 2em',
+                              padding: '0',
+                              position: 'relative',
+                              _before: {
+                                content: '""',
+                                display: 'block',
+                                width: '0',
+                                position: 'absolute',
+                                top: '0',
+                                bottom: '0',
+                                left: '0',
+                                borderLeft: '1px solid',
+                                backgroundColor: 'white',
                               },
                             })}
-                            disabled={isAnswerSendExecuting}
-                            onClick={async () => {
-                              try {
-                                await sendFeedback(option.value)
-                              } catch (error) {
-                                console.error('Error sending feedback:', error)
-                              }
-                            }}
                           >
-                            {option.label}
-                          </button>
+                            {resultGroup.data.map((item, j) => (
+                              <li
+                                key={`result-group-item-${j}`}
+                                className={css({
+                                  margin: '0',
+                                  padding: '1em 0 0 1.5em',
+                                  position: 'relative',
+                                  _before: {
+                                    content: '""',
+                                    borderTop: '1px solid',
+                                    display: 'block',
+                                    height: '100%',
+                                    left: '0',
+                                    marginTop: '1em',
+                                    position: 'absolute',
+                                    top: '1.5em',
+                                    width: '1.5em',
+                                  },
+                                  _last: {
+                                    _before: {
+                                      content: '""',
+                                      bottom: '0',
+                                      height: 'auto',
+                                      top: '1.5em',
+                                      backgroundColor: 'white',
+                                    },
+                                  },
+                                })}
+                              >
+                                <div
+                                  className={css({
+                                    borderRadius: '5px',
+                                    border: '1px solid #afafaf',
+                                    backgroundColor: 'white',
+                                    margin: '0',
+                                    padding: '0.5em',
+                                    maxWidth: '20em',
+                                  })}
+                                >{`${item[groupByKeys[1]]}（${
+                                  item.data[0]['場所']
+                                }）`}</div>
+                              </li>
+                            ))}
+                          </ul>
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <p className={css({ marginBottom: '0' })}>
-                      ご回答ありがとうございました。
-                    </p>
-                  )}
-                  {isAnswerSendExecuting && (
-                    <div
-                      className={flex({
-                        position: 'absolute',
-                        top: '0',
-                        left: '0',
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.28)',
-                        borderRadius: '8px',
-                        justify: 'center',
-                        align: 'center',
-                        zIndex: '1',
+                  </div>
+                )}
+                {results.length > 0 && (
+                  <ol
+                    className={flex({
+                      flexDirection: 'column',
+                      align: 'center',
+                      justify: 'center',
+                    })}
+                  >
+                    {results.map((result, i) => (
+                      <li
+                        key={`result-${i}`}
+                        className={css({
+                          width: '100%',
+                          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                          padding: '18px 24px',
+                          marginBottom: '18px',
+                          borderRadius: '8px',
+                          color: '#000',
+                        })}
+                      >
+                        <h3
+                          className={css({
+                            fontSize: '22px',
+                            fontWeight: 'normal',
+                            marginTop: '0',
+                          })}
+                        >
+                          {`${i + 1}. ${result['手続名称']}`}
+                        </h3>
+                        <p
+                          className={flex({
+                            fontSize: '16px',
+                            marginTop: '0',
+                          })}
+                        >
+                          <span
+                            className={css({
+                              fontSize: '18px',
+                              fontFamily: 'Material Icons Round',
+                              color: 'nerimaDark',
+                              paddingRight: '8px',
+                            })}
+                            aria-label="届出名称"
+                          >
+                            edit
+                          </span>
+                          {`${result['書類正式名称']}`}
+                        </p>
+                        <p
+                          className={flex({
+                            fontSize: '22px',
+                            marginTop: '0',
+                          })}
+                        >
+                          <span
+                            className={css({
+                              fontSize: '24px',
+                              fontFamily: 'Material Icons Round',
+                              color: 'nerimaDark',
+                              paddingRight: '12px',
+                            })}
+                            aria-label="受付窓口"
+                          >
+                            co_present
+                          </span>
+                          {getConcatResults(result, concatDisplayKeys)}
+                        </p>
+                        <dl
+                          className={grid({
+                            columns: 2,
+                            gridTemplateColumns: 'max-content auto',
+                            gap: '4px',
+                            fontSize: '14px',
+                            margin: '0',
+                          })}
+                        >
+                          {Object.entries(result)
+                            .filter(
+                              ([k]) =>
+                                !excludeDisplayKeys.includes(k) &&
+                                !concatDisplayKeys.includes(k)
+                            )
+                            .map(([key, value], j) => (
+                              <React.Fragment key={`result-${j}`}>
+                                <dt
+                                  className={css({
+                                    _after: { content: '" : "' },
+                                  })}
+                                >
+                                  {key}
+                                </dt>
+                                <dd
+                                  className={css({
+                                    margin: '0',
+                                    whiteSpace: 'pre-wrap',
+                                  })}
+                                >
+                                  {/^http.?:\/\//.test(value as string) ? (
+                                    <a
+                                      href={value as string}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className={css({
+                                        wordBreak: 'break-all',
+                                      })}
+                                    >
+                                      {value as string}
+                                    </a>
+                                  ) : (
+                                    `${value}`
+                                  )}
+                                </dd>
+                              </React.Fragment>
+                            ))}
+                        </dl>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {results.length > 0 && (
+                  <div
+                    className={css({
+                      position: 'relative',
+                      backgroundColor: 'nerimaPale',
+                      padding: '18px 24px',
+                      borderRadius: '8px',
+                      color: '#000',
+                      marginTop: '24px',
+                    })}
+                  >
+                    <h2
+                      className={css({
+                        fontSize: '16px',
+                        fontWeight: 'normal',
+                        marginTop: '0',
                       })}
                     >
-                      <Loading />
-                    </div>
-                  )}
-                </div>
+                      行き先は見つかりましたか？
+                    </h2>
+                    <p className={css({ fontSize: '14px' })}>
+                      ※回答いただくと検索で入力いただいた文章は学習に活用されます。
+                    </p>
+                    {!isAnswerResponded ? (
+                      <ul className={flex({ justify: 'center' })}>
+                        {answerOptions.map((option, i) => (
+                          <li
+                            key={`answer-option-${i}`}
+                            className={css({ margin: '0 16px' })}
+                          >
+                            <button
+                              type="button"
+                              className={css({
+                                appearance: 'none',
+                                border: 'none',
+                                width: '5em',
+                                fontSize: '16px',
+                                color: 'nerimaDark',
+                                backgroundColor: 'white',
+                                boxShadow: 'box',
+                                borderRadius: '4px',
+                                padding: '6px 12px',
+                                cursor: 'pointer',
+                                _disabled: {
+                                  cursor: 'wait',
+                                },
+                              })}
+                              disabled={isAnswerSendExecuting}
+                              onClick={async () => {
+                                try {
+                                  await sendFeedback(option.value)
+                                } catch (error) {
+                                  console.error(
+                                    'Error sending feedback:',
+                                    error
+                                  )
+                                }
+                              }}
+                            >
+                              {option.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className={css({ marginBottom: '0' })}>
+                        ご回答ありがとうございました。
+                      </p>
+                    )}
+                    {isAnswerSendExecuting && (
+                      <div
+                        className={flex({
+                          position: 'absolute',
+                          top: '0',
+                          left: '0',
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                          borderRadius: '8px',
+                          justify: 'center',
+                          align: 'center',
+                          zIndex: '1',
+                        })}
+                      >
+                        <Loading />
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
