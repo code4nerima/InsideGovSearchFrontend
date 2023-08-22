@@ -654,7 +654,12 @@ export default function Home() {
                               >
                                 {key}
                               </dt>
-                              <dd className={css({ margin: '0' })}>
+                              <dd
+                                className={css({
+                                  margin: '0',
+                                  whiteSpace: 'pre-wrap',
+                                })}
+                              >
                                 {/^http.?:\/\//.test(value as string) ? (
                                   <a
                                     href={value as string}
