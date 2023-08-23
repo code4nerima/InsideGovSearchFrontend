@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
@@ -46,7 +46,11 @@ export default function Home() {
     },
   ]
 
-  const [currentPrompt, setCurrentPrompt] = useState('')
+  const [formData, setFormData] = useState({
+    currentPrompt: '',
+    selectedPrompt: '',
+    selectedLimit: 5,
+  })
   const [results, setResults] = useState([])
   const [resultsGroupBy, setResultsGroupBy] = useState<Array<GroupByKeyObject>>(
     []
@@ -54,8 +58,6 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
-  const [selectedPrompt, setSelectedPrompt] = useState('')
-  const [selectedLimit, setSelectedLimit] = useState(5)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
@@ -67,68 +69,87 @@ export default function Home() {
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
 
-  const handleSearch = async (prompt: string) => {
-    if (currentPrompt === '') return
-    try {
-      setIsSearchExecuting(true)
-      setIsResultResponded(false)
-      setIsSuggestedPromptResponded(false)
-      setIsAnswerResponded(false)
-      setSelectedPrompt('')
-      const res = await fetch('/api/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: prompt, limit: selectedLimit }),
-      }).then((res) => {
-        if (!res.ok) {
-          throw new Error(res.statusText)
-        }
-        return res
-      })
-      const data = await res.json()
-      const results = data.results.results
-      let filteredResults = []
-      if (results.length <= minimumItems) {
-        filteredResults = results.filter(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (result: any) => result['score'] >= minimumScore
-        )
-      } else {
-        filteredResults = results.filter(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (result: any) => result['deviationValue'] >= scaledDeviation
-        )
-      }
-      setResults(filteredResults)
-      const groupBy = getGroupByKeysRecursive(filteredResults, groupByKeys)
-      setResultsGroupBy(groupBy)
-      setKeyword(data.results.keywords)
-      setSynonym(data.results.synonyms)
-      setIsResultResponded(true)
-      setIsSearchExecuting(false)
-      await suggestPrompt()
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('Error', error.message)
-      } else {
-        console.log('Error')
-      }
-    } finally {
-      setIsResultResponded(true)
-      setIsSearchExecuting(false)
-    }
-  }
+  const handleInputChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target
+      setFormData((prevState) => ({ ...prevState, [name]: value }))
+    },
+    []
+  )
 
-  const suggestPrompt = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const MemoizedInput = React.memo(function Input(props: any) {
+    return <input {...props} />
+  })
+
+  const handleSearch = useCallback(
+    async (prompt: string, limit: number = 5) => {
+      if (prompt === '') return
+      try {
+        setIsSearchExecuting(true)
+        setIsResultResponded(false)
+        setIsSuggestedPromptResponded(false)
+        setIsAnswerResponded(false)
+        const res = await fetch('/api/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: prompt,
+            limit: Number(limit),
+          }),
+        }).then((res) => {
+          if (!res.ok) {
+            throw new Error(res.statusText)
+          }
+          return res
+        })
+        const data = await res.json()
+        const results = data.results.results
+        let filteredResults = []
+        if (results.length <= minimumItems) {
+          filteredResults = results.filter(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (result: any) => result['score'] >= minimumScore
+          )
+        } else {
+          filteredResults = results.filter(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (result: any) => result['deviationValue'] >= scaledDeviation
+          )
+        }
+        setResults(filteredResults)
+        const groupBy = getGroupByKeysRecursive(filteredResults, groupByKeys)
+        setResultsGroupBy(groupBy)
+        setKeyword(data.results.keywords)
+        setSynonym(data.results.synonyms)
+        setIsResultResponded(true)
+        setIsSearchExecuting(false)
+        await suggestPrompt(prompt)
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log('Error', error.message)
+        } else {
+          console.log('Error')
+        }
+      } finally {
+        setIsResultResponded(true)
+        setIsSearchExecuting(false)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
+  const suggestPrompt = useCallback(async (prompt: string) => {
     try {
       const res = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: currentPrompt }),
+        body: JSON.stringify({ prompt: prompt }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -146,57 +167,71 @@ export default function Home() {
     } finally {
       setIsSuggestedPromptResponded(true)
     }
-  }
+  }, [])
 
-  const sendFeedback = async (answer: number) => {
-    if (answer === undefined) return
-    try {
-      setIsAnswerSendExecuting(true)
-      await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: currentPrompt,
-          keywords: keyword,
-          synonyms: synonym,
-          answer: answer,
-        }),
-      })
-      setIsAnswerResponded(true)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsAnswerSendExecuting(false)
-    }
-  }
+  const sendFeedback = useCallback(
+    async (answer: number) => {
+      if (answer === undefined) return
+      try {
+        setIsAnswerSendExecuting(true)
+        await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            prompt: formData.currentPrompt,
+            keywords: keyword,
+            synonyms: synonym,
+            answer: answer,
+          }),
+        })
+        setIsAnswerResponded(true)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsAnswerSendExecuting(false)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleKeyDown = async (e: any) => {
-    if (e.keyCode === 13 && !isComposed) {
-      e.preventDefault()
-      await handleSearch(currentPrompt)
-    }
-  }
+  const handleKeyDown = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (e: any) => {
+      if (e.keyCode === 13 && !isComposed) {
+        e.preventDefault()
+        await handleSearch(formData.currentPrompt, formData.selectedLimit)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
-  const handleReset = () => {
-    setCurrentPrompt('')
+  const handleReset = useCallback(() => {
+    setFormData((prevState) => ({
+      ...prevState,
+      currentPrompt: '',
+      selectedPrompt: '',
+    }))
     setResults([])
     setResultsGroupBy([])
     setKeyword('')
     setSynonym('')
     setSuggestedPrompts([])
-    setSelectedPrompt('')
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
     setIsAnswerResponded(false)
-  }
+  }, [])
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedPrompt(e.target.value)
-    setCurrentPrompt(e.target.value)
-    await handleSearch(e.target.value)
+    setFormData((prevState) => ({
+      ...prevState,
+      currentPrompt: e.target.value,
+      selectedPrompt: e.target.value,
+    }))
+    await handleSearch(e.target.value, formData.selectedLimit)
   }
 
   useEffect(() => {
@@ -335,9 +370,10 @@ export default function Home() {
                   },
                 })}
               >
-                <input
+                <MemoizedInput
                   id="prompt"
                   type="search"
+                  name="currentPrompt"
                   className={css({
                     appearance: 'none',
                     borderRadius: '3em',
@@ -356,12 +392,12 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
-                  value={currentPrompt}
+                  value={formData.currentPrompt}
                   placeholder="例）引っ越ししたときの手続きをしたい"
                   disabled={isSearchExecuting}
                   onCompositionStart={startComposition}
                   onCompositionEnd={endComposition}
-                  onChange={(e) => setCurrentPrompt(e.target.value)}
+                  onChange={handleInputChange}
                   onKeyDown={handleKeyDown}
                 />
                 <button
@@ -396,16 +432,18 @@ export default function Home() {
                     },
                   })}
                   disabled={isSearchExecuting}
-                  onClick={() => handleSearch(currentPrompt)}
+                  onClick={() =>
+                    handleSearch(formData.currentPrompt, formData.selectedLimit)
+                  }
                 >
                   検索
                 </button>
               </div>
-              <ul>
+              <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
                 {limitSelectOptions.map((option, i) => (
                   <li
                     key={`limit-select-${i}`}
-                    className={css({ marginBottom: '12px' })}
+                    className={css({ margin: '0 18px 12px 0' })}
                   >
                     <input
                       type="radio"
@@ -417,10 +455,12 @@ export default function Home() {
                         },
                       })}
                       id={`limit-select-id-${i}`}
-                      name="limit-select"
+                      name="selectedLimit"
                       value={option.value}
-                      checked={selectedLimit === option.value}
-                      onChange={() => setSelectedLimit(option.value)}
+                      checked={
+                        String(formData.selectedLimit) === String(option.value)
+                      }
+                      onChange={handleInputChange}
                     />
                     <label
                       htmlFor={`limit-select-id-${i}`}
@@ -451,7 +491,7 @@ export default function Home() {
                 disabled={
                   isSearchExecuting ||
                   (!isSuggestedPromptResponded && isResultResponded) ||
-                  (currentPrompt === '' && !isResultResponded)
+                  (formData.currentPrompt === '' && !isResultResponded)
                 }
                 onClick={handleReset}
               >
@@ -543,7 +583,7 @@ export default function Home() {
                           id={`suggested-prompt-id-${i}`}
                           name="suggested-prompt"
                           value={prompt}
-                          checked={selectedPrompt === prompt}
+                          checked={formData.selectedPrompt === prompt}
                           onChange={handleChangePrompt}
                         />
                         <label
