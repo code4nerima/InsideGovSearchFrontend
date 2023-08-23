@@ -390,11 +390,11 @@ export default function Home() {
                   検索
                 </button>
               </div>
-              <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
+              <ul>
                 {limitSelectOptions.map((option, i) => (
                   <li
                     key={`limit-select-${i}`}
-                    className={css({ margin: '0 18px 12px 0' })}
+                    className={css({ marginBottom: '12px' })}
                   >
                     <input
                       type="radio"
