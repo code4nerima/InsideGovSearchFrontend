@@ -671,7 +671,7 @@ export default function Home() {
                             },
                           })}
                         >
-                          <div
+                          <h4
                             className={css({
                               borderRadius: '4px',
                               border: '1px solid #afafaf',
@@ -679,10 +679,11 @@ export default function Home() {
                               margin: '0',
                               padding: '0.5em',
                               maxWidth: '14em',
+                              fontWeight: 'normal',
                             })}
                           >
                             {resultGroup[groupByKeys[0]]}
-                          </div>
+                          </h4>
                           <ul
                             className={css({
                               margin: '0 0 0 2em',
