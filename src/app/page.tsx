@@ -46,7 +46,7 @@ export default function Home() {
   const [formData, setFormData] = useState({
     currentPrompt: '',
     selectedPrompt: '',
-    selectedLimit: 5,
+    selectedLimit: 0,
   })
   const [results, setResults] = useState([])
   const [resultsGroupBy, setResultsGroupBy] = useState<Array<GroupByKeyObject>>(
@@ -201,6 +201,13 @@ export default function Home() {
     }))
     await handleSearch(e.target.value, formData.selectedLimit)
   }
+
+  useEffect(() => {
+    setFormData((prevState) => ({
+      ...prevState,
+      selectedLimit: 5,
+    }))
+  }, [])
 
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
