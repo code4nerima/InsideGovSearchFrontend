@@ -632,7 +632,7 @@ export default function Home() {
                         >
                           <div
                             className={css({
-                              borderRadius: '5px',
+                              borderRadius: '4px',
                               border: '1px solid #afafaf',
                               backgroundColor: 'white',
                               margin: '0',
@@ -691,7 +691,7 @@ export default function Home() {
                               >
                                 <div
                                   className={css({
-                                    borderRadius: '5px',
+                                    borderRadius: '4px',
                                     border: '1px solid #afafaf',
                                     backgroundColor: 'white',
                                     margin: '0',
