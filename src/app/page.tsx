@@ -55,7 +55,7 @@ export default function Home() {
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
   const [selectedPrompt, setSelectedPrompt] = useState('')
-  const [selectedLimit, setSelectedLimit] = useState(5)
+  const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
@@ -198,6 +198,10 @@ export default function Home() {
     setCurrentPrompt(e.target.value)
     await handleSearch(e.target.value)
   }
+
+  useEffect(() => {
+    setSelectedLimit(5)
+  }, [])
 
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
@@ -401,11 +405,11 @@ export default function Home() {
                   検索
                 </button>
               </div>
-              <ul>
+              <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
                 {limitSelectOptions.map((option, i) => (
                   <li
                     key={`limit-select-${i}`}
-                    className={css({ marginBottom: '12px' })}
+                    className={css({ margin: '0 18px 12px 0' })}
                   >
                     <input
                       type="radio"
