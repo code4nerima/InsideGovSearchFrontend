@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import Loading from './loading'
@@ -43,11 +43,7 @@ export default function Home() {
     },
   ]
 
-  const [formData, setFormData] = useState({
-    currentPrompt: '',
-    selectedPrompt: '',
-    selectedLimit: 0,
-  })
+  const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
   const [resultsGroupBy, setResultsGroupBy] = useState<Array<GroupByKeyObject>>(
     []
@@ -55,6 +51,8 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
+  const [selectedPrompt, setSelectedPrompt] = useState('')
+  const [selectedLimit, setSelectedLimit] = useState(5)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
@@ -66,30 +64,20 @@ export default function Home() {
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
 
-  const handleInputChange = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target
-      setFormData((prevState) => ({ ...prevState, [name]: value }))
-    },
-    []
-  )
-
-  const handleSearch = async (prompt: string, limit: number = 5) => {
-    if (prompt === '') return
+  const handleSearch = async (prompt: string) => {
+    if (currentPrompt === '') return
     try {
       setIsSearchExecuting(true)
       setIsResultResponded(false)
       setIsSuggestedPromptResponded(false)
       setIsAnswerResponded(false)
+      setSelectedPrompt('')
       const res = await fetch('/api/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          prompt: prompt,
-          limit: Number(limit),
-        }),
+        body: JSON.stringify({ prompt: prompt, limit: selectedLimit }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -105,7 +93,7 @@ export default function Home() {
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
-      await suggestPrompt(prompt)
+      await suggestPrompt()
     } catch (error) {
       if (error instanceof Error) {
         console.log('Error', error.message)
@@ -118,14 +106,14 @@ export default function Home() {
     }
   }
 
-  const suggestPrompt = async (prompt: string) => {
+  const suggestPrompt = async () => {
     try {
       const res = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt }),
+        body: JSON.stringify({ prompt: currentPrompt }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -155,7 +143,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prompt: formData.currentPrompt,
+          prompt: currentPrompt,
           keywords: keyword,
           synonyms: synonym,
           answer: answer,
@@ -173,41 +161,28 @@ export default function Home() {
   const handleKeyDown = async (e: any) => {
     if (e.keyCode === 13 && !isComposed) {
       e.preventDefault()
-      await handleSearch(formData.currentPrompt, formData.selectedLimit)
+      await handleSearch(currentPrompt)
     }
   }
 
   const handleReset = () => {
-    setFormData((prevState) => ({
-      ...prevState,
-      currentPrompt: '',
-      selectedPrompt: '',
-    }))
+    setCurrentPrompt('')
     setResults([])
     setResultsGroupBy([])
     setKeyword('')
     setSynonym('')
     setSuggestedPrompts([])
+    setSelectedPrompt('')
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
     setIsAnswerResponded(false)
   }
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      currentPrompt: e.target.value,
-      selectedPrompt: e.target.value,
-    }))
-    await handleSearch(e.target.value, formData.selectedLimit)
+    setSelectedPrompt(e.target.value)
+    setCurrentPrompt(e.target.value)
+    await handleSearch(e.target.value)
   }
-
-  useEffect(() => {
-    setFormData((prevState) => ({
-      ...prevState,
-      selectedLimit: 5,
-    }))
-  }, [])
 
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
@@ -348,7 +323,6 @@ export default function Home() {
                 <input
                   id="prompt"
                   type="search"
-                  name="currentPrompt"
                   className={css({
                     appearance: 'none',
                     borderRadius: '3em',
@@ -367,12 +341,12 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
-                  value={formData.currentPrompt}
+                  value={currentPrompt}
                   placeholder="例）引っ越ししたときの手続きをしたい"
                   disabled={isSearchExecuting}
                   onCompositionStart={startComposition}
                   onCompositionEnd={endComposition}
-                  onChange={handleInputChange}
+                  onChange={(e) => setCurrentPrompt(e.target.value)}
                   onKeyDown={handleKeyDown}
                 />
                 <button
@@ -407,18 +381,16 @@ export default function Home() {
                     },
                   })}
                   disabled={isSearchExecuting}
-                  onClick={() =>
-                    handleSearch(formData.currentPrompt, formData.selectedLimit)
-                  }
+                  onClick={() => handleSearch(currentPrompt)}
                 >
                   検索
                 </button>
               </div>
-              <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
+              <ul>
                 {limitSelectOptions.map((option, i) => (
                   <li
                     key={`limit-select-${i}`}
-                    className={css({ margin: '0 18px 12px 0' })}
+                    className={css({ marginBottom: '12px' })}
                   >
                     <input
                       type="radio"
@@ -430,12 +402,10 @@ export default function Home() {
                         },
                       })}
                       id={`limit-select-id-${i}`}
-                      name="selectedLimit"
+                      name="limit-select"
                       value={option.value}
-                      checked={
-                        String(formData.selectedLimit) === String(option.value)
-                      }
-                      onChange={handleInputChange}
+                      checked={selectedLimit === option.value}
+                      onChange={() => setSelectedLimit(option.value)}
                     />
                     <label
                       htmlFor={`limit-select-id-${i}`}
@@ -466,7 +436,7 @@ export default function Home() {
                 disabled={
                   isSearchExecuting ||
                   (!isSuggestedPromptResponded && isResultResponded) ||
-                  (formData.currentPrompt === '' && !isResultResponded)
+                  (currentPrompt === '' && !isResultResponded)
                 }
                 onClick={handleReset}
               >
@@ -558,7 +528,7 @@ export default function Home() {
                           id={`suggested-prompt-id-${i}`}
                           name="suggested-prompt"
                           value={prompt}
-                          checked={formData.selectedPrompt === prompt}
+                          checked={selectedPrompt === prompt}
                           onChange={handleChangePrompt}
                         />
                         <label
