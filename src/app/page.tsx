@@ -74,55 +74,51 @@ export default function Home() {
     []
   )
 
-  const handleSearch = useCallback(
-    async (prompt: string, limit: number = 5) => {
-      if (prompt === '') return
-      try {
-        setIsSearchExecuting(true)
-        setIsResultResponded(false)
-        setIsSuggestedPromptResponded(false)
-        setIsAnswerResponded(false)
-        const res = await fetch('/api/search', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: prompt,
-            limit: Number(limit),
-          }),
-        }).then((res) => {
-          if (!res.ok) {
-            throw new Error(res.statusText)
-          }
-          return res
-        })
-        const data = await res.json()
-        const results = data.results.results
-        setResults(results)
-        const groupBy = getGroupByKeysRecursive(results, groupByKeys)
-        setResultsGroupBy(groupBy)
-        setKeyword(data.results.keywords)
-        setSynonym(data.results.synonyms)
-        setIsResultResponded(true)
-        setIsSearchExecuting(false)
-        await suggestPrompt(prompt)
-      } catch (error) {
-        if (error instanceof Error) {
-          console.log('Error', error.message)
-        } else {
-          console.log('Error')
+  const handleSearch = async (prompt: string, limit: number = 5) => {
+    if (prompt === '') return
+    try {
+      setIsSearchExecuting(true)
+      setIsResultResponded(false)
+      setIsSuggestedPromptResponded(false)
+      setIsAnswerResponded(false)
+      const res = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          limit: Number(limit),
+        }),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText)
         }
-      } finally {
-        setIsResultResponded(true)
-        setIsSearchExecuting(false)
+        return res
+      })
+      const data = await res.json()
+      const results = data.results.results
+      setResults(results)
+      const groupBy = getGroupByKeysRecursive(results, groupByKeys)
+      setResultsGroupBy(groupBy)
+      setKeyword(data.results.keywords)
+      setSynonym(data.results.synonyms)
+      setIsResultResponded(true)
+      setIsSearchExecuting(false)
+      await suggestPrompt(prompt)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Error', error.message)
+      } else {
+        console.log('Error')
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+    } finally {
+      setIsResultResponded(true)
+      setIsSearchExecuting(false)
+    }
+  }
 
-  const suggestPrompt = useCallback(async (prompt: string) => {
+  const suggestPrompt = async (prompt: string) => {
     try {
       const res = await fetch('/api/promptVariations', {
         method: 'POST',
@@ -147,7 +143,7 @@ export default function Home() {
     } finally {
       setIsSuggestedPromptResponded(true)
     }
-  }, [])
+  }
 
   const sendFeedback = async (answer: number) => {
     if (answer === undefined) return
@@ -173,19 +169,15 @@ export default function Home() {
     }
   }
 
-  const handleKeyDown = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async (e: any) => {
-      if (e.keyCode === 13 && !isComposed) {
-        e.preventDefault()
-        await handleSearch(formData.currentPrompt, formData.selectedLimit)
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleKeyDown = async (e: any) => {
+    if (e.keyCode === 13 && !isComposed) {
+      e.preventDefault()
+      await handleSearch(formData.currentPrompt, formData.selectedLimit)
+    }
+  }
 
-  const handleReset = useCallback(() => {
+  const handleReset = () => {
     setFormData((prevState) => ({
       ...prevState,
       currentPrompt: '',
@@ -199,7 +191,7 @@ export default function Home() {
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
     setIsAnswerResponded(false)
-  }, [])
+  }
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
