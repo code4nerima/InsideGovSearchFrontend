@@ -149,33 +149,29 @@ export default function Home() {
     }
   }, [])
 
-  const sendFeedback = useCallback(
-    async (answer: number) => {
-      if (answer === undefined) return
-      try {
-        setIsAnswerSendExecuting(true)
-        await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            prompt: formData.currentPrompt,
-            keywords: keyword,
-            synonyms: synonym,
-            answer: answer,
-          }),
-        })
-        setIsAnswerResponded(true)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setIsAnswerSendExecuting(false)
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+  const sendFeedback = async (answer: number) => {
+    if (answer === undefined) return
+    try {
+      setIsAnswerSendExecuting(true)
+      await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: formData.currentPrompt,
+          keywords: keyword,
+          synonyms: synonym,
+          answer: answer,
+        }),
+      })
+      setIsAnswerResponded(true)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsAnswerSendExecuting(false)
+    }
+  }
 
   const handleKeyDown = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
