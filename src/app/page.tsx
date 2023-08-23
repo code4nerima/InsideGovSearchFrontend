@@ -17,9 +17,6 @@ export default function Home() {
   const debug = searchParams.get('debug')
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
-  const scaledDeviation = 50
-  const minimumItems = 1
-  const minimumScore = 3
   const groupByKeys = ['担当課', '担当係']
   const excludeDisplayKeys = [
     '手続名称',
@@ -107,20 +104,8 @@ export default function Home() {
         })
         const data = await res.json()
         const results = data.results.results
-        let filteredResults = []
-        if (results.length <= minimumItems) {
-          filteredResults = results.filter(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (result: any) => result['score'] >= minimumScore
-          )
-        } else {
-          filteredResults = results.filter(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (result: any) => result['deviationValue'] >= scaledDeviation
-          )
-        }
-        setResults(filteredResults)
-        const groupBy = getGroupByKeysRecursive(filteredResults, groupByKeys)
+        setResults(results)
+        const groupBy = getGroupByKeysRecursive(results, groupByKeys)
         setResultsGroupBy(groupBy)
         setKeyword(data.results.keywords)
         setSynonym(data.results.synonyms)
