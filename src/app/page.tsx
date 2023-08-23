@@ -52,7 +52,7 @@ export default function Home() {
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
   const [selectedPrompt, setSelectedPrompt] = useState('')
-  const [selectedLimit, setSelectedLimit] = useState(5)
+  const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
@@ -183,6 +183,10 @@ export default function Home() {
     setCurrentPrompt(e.target.value)
     await handleSearch(e.target.value)
   }
+
+  useEffect(() => {
+    setSelectedLimit(5)
+  }, [])
 
   useEffect(() => {
     if (isResultResponded && resultTitleRef.current) {
