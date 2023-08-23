@@ -698,9 +698,11 @@ export default function Home() {
                                     padding: '0.5em',
                                     maxWidth: '20em',
                                   })}
-                                >{`${item[groupByKeys[1]]}（${
-                                  item.data[0]['場所']
-                                }）`}</div>
+                                >{`${item[groupByKeys[1]]}${
+                                  item.data[0]['場所'] !== ''
+                                    ? `（${item.data[0]['場所']}）`
+                                    : ''
+                                }`}</div>
                               </li>
                             ))}
                           </ul>
