@@ -68,10 +68,7 @@ export default function Home() {
     if (currentPrompt === '') return
     try {
       setIsSearchExecuting(true)
-      setIsResultResponded(false)
-      setIsSuggestedPromptResponded(false)
-      setIsAnswerResponded(false)
-      setSelectedPrompt('')
+      handleReset()
       const res = await fetch('/api/search', {
         method: 'POST',
         headers: {
@@ -166,7 +163,6 @@ export default function Home() {
   }
 
   const handleReset = () => {
-    setCurrentPrompt('')
     setResults([])
     setResultsGroupBy([])
     setKeyword('')
@@ -176,6 +172,11 @@ export default function Home() {
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
     setIsAnswerResponded(false)
+  }
+
+  const handleClearAll = () => {
+    setCurrentPrompt('')
+    handleReset()
   }
 
   const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -442,7 +443,7 @@ export default function Home() {
                   (!isSuggestedPromptResponded && isResultResponded) ||
                   (currentPrompt === '' && !isResultResponded)
                 }
-                onClick={handleReset}
+                onClick={handleClearAll}
               >
                 検索をリセット
               </button>
