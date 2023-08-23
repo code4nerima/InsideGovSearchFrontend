@@ -74,11 +74,6 @@ export default function Home() {
     []
   )
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const MemoizedInput = React.memo(function Input(props: any) {
-    return <input {...props} />
-  })
-
   const handleSearch = useCallback(
     async (prompt: string, limit: number = 5) => {
       if (prompt === '') return
@@ -355,7 +350,7 @@ export default function Home() {
                   },
                 })}
               >
-                <MemoizedInput
+                <input
                   id="prompt"
                   type="search"
                   name="currentPrompt"
