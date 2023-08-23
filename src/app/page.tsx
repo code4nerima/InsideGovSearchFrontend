@@ -60,6 +60,7 @@ export default function Home() {
   const [isComposed, setIsComposed] = useState(false)
   const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
   const [isAnswerResponded, setIsAnswerResponded] = useState(false)
+  const [isFontReady, setIsFontReady] = useState(false)
 
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
@@ -187,6 +188,9 @@ export default function Home() {
 
   useEffect(() => {
     setSelectedLimit(5)
+    document.fonts.ready.then(function () {
+      setIsFontReady(true)
+    })
   }, [])
 
   useEffect(() => {
@@ -315,16 +319,22 @@ export default function Home() {
                   align: 'center',
                   justify: 'center',
                   marginBottom: '14px',
-                  _before: {
-                    content: '"search"',
-                    fontFamily: 'Material Symbols Rounded Variable',
-                    fontSize: '24px',
-                    color: 'nerimaDark',
-                    position: 'absolute',
-                    left: '12px',
-                  },
                 })}
               >
+                {isFontReady && (
+                  <span
+                    className={css({
+                      fontFamily: 'Material Symbols Rounded Variable',
+                      fontSize: '24px',
+                      color: 'nerimaDark',
+                      position: 'absolute',
+                      left: '12px',
+                    })}
+                    aria-hidden="true"
+                  >
+                    search
+                  </span>
+                )}
                 <input
                   id="prompt"
                   type="search"
@@ -777,17 +787,19 @@ export default function Home() {
                             marginTop: '0',
                           })}
                         >
-                          <span
-                            className={css({
-                              fontSize: '18px',
-                              fontFamily: 'Material Icons Round',
-                              color: 'nerimaDark',
-                              paddingRight: '8px',
-                            })}
-                            aria-label="届出名称"
-                          >
-                            edit
-                          </span>
+                          {isFontReady && (
+                            <span
+                              className={css({
+                                fontSize: '18px',
+                                fontFamily: 'Material Icons Round',
+                                color: 'nerimaDark',
+                                paddingRight: '8px',
+                              })}
+                              aria-label="届出名称"
+                            >
+                              edit
+                            </span>
+                          )}
                           {`${result['書類正式名称']}`}
                         </p>
                         <p
@@ -796,17 +808,19 @@ export default function Home() {
                             marginTop: '0',
                           })}
                         >
-                          <span
-                            className={css({
-                              fontSize: '24px',
-                              fontFamily: 'Material Icons Round',
-                              color: 'nerimaDark',
-                              paddingRight: '12px',
-                            })}
-                            aria-label="受付窓口"
-                          >
-                            co_present
-                          </span>
+                          {isFontReady && (
+                            <span
+                              className={css({
+                                fontSize: '24px',
+                                fontFamily: 'Material Icons Round',
+                                color: 'nerimaDark',
+                                paddingRight: '12px',
+                              })}
+                              aria-label="受付窓口"
+                            >
+                              co_present
+                            </span>
+                          )}
                           {getConcatResults(result, concatDisplayKeys)}
                         </p>
                         <dl
