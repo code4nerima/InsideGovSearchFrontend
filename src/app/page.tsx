@@ -787,6 +787,7 @@ export default function Home() {
                             fontSize: '16px',
                             marginTop: '0',
                           })}
+                          aria-label={`手続き名称：${result['書類正式名称']}`}
                         >
                           {isFontReady && (
                             <span
@@ -796,7 +797,7 @@ export default function Home() {
                                 color: 'nerimaDark',
                                 paddingRight: '8px',
                               })}
-                              aria-label="届出名称"
+                              aria-hidden="true"
                             >
                               edit
                             </span>
@@ -808,6 +809,10 @@ export default function Home() {
                             fontSize: '22px',
                             marginTop: '0',
                           })}
+                          aria-label={`受付窓口：${getConcatResults(
+                            result,
+                            concatDisplayKeys
+                          )}`}
                         >
                           {isFontReady && (
                             <span
@@ -817,7 +822,7 @@ export default function Home() {
                                 color: 'nerimaDark',
                                 paddingRight: '12px',
                               })}
-                              aria-label="受付窓口"
+                              aria-hidden="true"
                             >
                               co_present
                             </span>
