@@ -241,7 +241,7 @@ export default function Home() {
             margin: 'min(4vw, 60px)',
             padding: 'min(4vw, 40px)',
             border: '1px solid white',
-            borderRadius: '7vw',
+            borderRadius: 'min(7vw, 50px)',
           })}
         >
           <h1
