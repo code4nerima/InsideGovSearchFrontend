@@ -1,9 +1,33 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
+const title = '練馬区届出・手続きガイド'
+const description = '自然言語入力で知りたい届出や手続きを検索します'
+const imgUrl = 'https://guide.code4nerima.org/images/og.png'
+
 export const metadata: Metadata = {
-  title: '練馬区届出・手続きガイド',
-  description: '自然言語入力で知りたい届出や手続きを検索します',
+  title: title,
+  description: description,
+  openGraph: {
+    title: title,
+    description: description,
+    url: 'https://guide.code4nerima.org/',
+    siteName: title,
+    images: [
+      {
+        url: imgUrl,
+        width: 1200,
+        height: 630,
+      },
+    ],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: title,
+    description: description,
+    images: [imgUrl],
+  },
 }
 
 export default function RootLayout({
