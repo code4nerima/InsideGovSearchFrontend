@@ -613,7 +613,7 @@ export default function Home() {
                   <div
                     className={css({
                       color: '#000',
-                      padding: '18px 24px 18px 0',
+                      padding: '18px 24px',
                       borderRadius: '8px',
                       backgroundColor: 'white',
                       marginBottom: '42px',
@@ -623,94 +623,64 @@ export default function Home() {
                       className={css({
                         fontSize: '22px',
                         fontWeight: 'normal',
-                        margin: '0 0 0 24px',
+                        margin: '0',
                       })}
                     >
                       とりあえず受付窓口に行ってみる
                     </h3>
-                    <ul
-                      className={css({
-                        paddingBottom: '1em',
-                        _before: {
-                          content: '""',
-                          display: 'block',
-                          width: '0',
-                          position: 'absolute',
-                          top: '0',
-                          bottom: '0',
-                          left: '0',
-                          borderLeft: '1px solid',
-                          backgroundColor: 'white',
-                        },
-                      })}
-                    >
+                    <dl>
                       {resultsGroupBy.map((resultGroup, i) => (
-                        <li
-                          key={`result-group-${i}`}
-                          className={css({
-                            margin: '0',
-                            padding: '1em 0 0 1.5em',
-                            position: 'relative',
-                            _before: {
-                              content: '""',
-                              display: 'block',
-                              height: '100%',
-                              left: '0',
-                              marginTop: '1em',
-                              position: 'absolute',
-                              top: '1.5em',
-                              width: '1.5em',
-                            },
-                            _last: {
-                              _before: {
-                                content: '""',
-                                bottom: '0',
-                                height: 'auto',
-                                top: '1.5em',
-                                backgroundColor: 'white',
-                              },
-                            },
-                          })}
-                        >
-                          <h4
+                        <React.Fragment key={`result-group-${i}`}>
+                          <dt
                             className={css({
                               borderRadius: '4px',
                               border: '1px solid #afafaf',
                               backgroundColor: 'white',
-                              margin: '0',
+                              marginTop: '1em',
                               padding: '0.5em',
                               maxWidth: '14em',
-                              fontWeight: 'normal',
                             })}
                           >
                             {resultGroup[groupByKeys[0]]}
-                          </h4>
-                          <ul
-                            className={css({
-                              margin: '0 0 0 2em',
-                              padding: '0',
-                              position: 'relative',
-                              _before: {
-                                content: '""',
-                                display: 'block',
-                                width: '0',
-                                position: 'absolute',
-                                top: '0',
-                                bottom: '0',
-                                left: '0',
-                                borderLeft: '1px solid',
-                                backgroundColor: 'white',
-                              },
-                            })}
-                          >
-                            {resultGroup.data.map((item1, j) => (
-                              <li
-                                key={`result-group-item-${j}`}
+                          </dt>
+                          {resultGroup.data.map((item1, j) => (
+                            <dd
+                              key={`result-group-item-${j}`}
+                              className={css({
+                                margin: '0 0 0 2em',
+                                padding: '0',
+                                position: 'relative',
+                                _after: {
+                                  content: '""',
+                                  display: 'block',
+                                  width: '1px',
+                                  height:
+                                    j === resultGroup.data.length - 1
+                                      ? '2.5em'
+                                      : '100%',
+                                  position: 'absolute',
+                                  top: '0',
+                                  bottom: '0',
+                                  left: '0',
+                                  backgroundColor: '#000',
+                                },
+                                _before: {
+                                  content: '""',
+                                  borderTop: '1px solid',
+                                  display: 'block',
+                                  height: '100%',
+                                  left: '0',
+                                  marginTop: '1em',
+                                  position: 'absolute',
+                                  top: '1.5em',
+                                  width: '1.5em',
+                                },
+                              })}
+                            >
+                              <dl
                                 className={css({
                                   margin: '0',
-                                  padding: item1[groupByKeys[1]]
-                                    ? '1em 0 0 1.5em'
-                                    : '0',
+                                  padding: '1em 0 0 1.5em',
                                   position: 'relative',
                                   _before: {
                                     content: '""',
@@ -723,19 +693,10 @@ export default function Home() {
                                     top: '1.5em',
                                     width: '1.5em',
                                   },
-                                  _last: {
-                                    _before: {
-                                      content: '""',
-                                      bottom: '0',
-                                      height: 'auto',
-                                      top: '1.5em',
-                                      backgroundColor: 'white',
-                                    },
-                                  },
                                 })}
                               >
                                 {item1[groupByKeys[1]] && (
-                                  <h5
+                                  <dt
                                     className={css({
                                       borderRadius: '4px',
                                       border: '1px solid #afafaf',
@@ -743,91 +704,74 @@ export default function Home() {
                                       margin: '0',
                                       padding: '0.5em',
                                       maxWidth: '14em',
-                                      fontSize: '16px',
-                                      fontWeight: 'normal',
                                     })}
-                                  >{`${item1[groupByKeys[1]]}`}</h5>
+                                  >{`${item1[groupByKeys[1]]}`}</dt>
                                 )}
-                                <ul
-                                  className={css({
-                                    margin: item1[groupByKeys[1]]
-                                      ? '0 0 0 2em'
-                                      : '0',
-                                    padding: '0',
-                                    position: 'relative',
-                                    _before: {
-                                      content: '""',
-                                      display: 'block',
-                                      width: '0',
-                                      position: 'absolute',
-                                      top: '0',
-                                      bottom: '0',
-                                      left: '0',
-                                      borderLeft: '1px solid',
-                                      backgroundColor: 'white',
-                                    },
-                                  })}
-                                >
-                                  {item1.data.map(
-                                    (
-                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                      item2: any,
-                                      k: number
-                                    ) => (
-                                      <li
-                                        key={`item-${j}-${k}`}
+                                {item1.data.map(
+                                  (
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    item2: any,
+                                    k: number
+                                  ) => (
+                                    <dd
+                                      key={`item-${j}-${k}`}
+                                      className={css({
+                                        margin: '0 0 0 2em',
+                                        padding: '1em 0 0 1.5em',
+                                        position: 'relative',
+                                        _after: {
+                                          content: '""',
+                                          display: 'block',
+                                          width: '1px',
+                                          height:
+                                            k === item1.data.length - 1
+                                              ? '2.5em'
+                                              : '100%',
+                                          position: 'absolute',
+                                          top: '0',
+                                          bottom: '0',
+                                          left: '0',
+                                          backgroundColor: '#000',
+                                        },
+                                        _before: {
+                                          content: '""',
+                                          borderTop: '1px solid',
+                                          display: 'block',
+                                          height: '100%',
+                                          left: '0',
+                                          marginTop: '1em',
+                                          position: 'absolute',
+                                          top: '1.5em',
+                                          width: '1.5em',
+                                        },
+                                      })}
+                                    >
+                                      <div
                                         className={css({
+                                          borderRadius: '4px',
+                                          border: '1px solid #afafaf',
+                                          backgroundColor: 'white',
                                           margin: '0',
-                                          padding: '1em 0 0 1.5em',
-                                          position: 'relative',
-                                          _before: {
-                                            content: '""',
-                                            borderTop: '1px solid',
-                                            display: 'block',
-                                            height: '100%',
-                                            left: '0',
-                                            marginTop: '1em',
-                                            position: 'absolute',
-                                            top: '1.5em',
-                                            width: '1.5em',
-                                          },
-                                          _last: {
-                                            _before: {
-                                              content: '""',
-                                              bottom: '0',
-                                              height: 'auto',
-                                              top: '1.5em',
-                                              backgroundColor: 'white',
-                                            },
-                                          },
+                                          padding: '0.5em',
+                                          maxWidth: '20em',
                                         })}
-                                      >
-                                        <div
-                                          className={css({
-                                            borderRadius: '4px',
-                                            border: '1px solid #afafaf',
-                                            backgroundColor: 'white',
-                                            margin: '0',
-                                            padding: '0.5em',
-                                            maxWidth: '20em',
-                                          })}
-                                        >{`${item2[groupByKeys[2]]}${
-                                          item2.data[0]['場所'] !== ''
-                                            ? `（${item2.data[0][
-                                                '場所'
-                                              ].replace(';', '・')}）`
-                                            : ''
-                                        }`}</div>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
+                                      >{`${item2[groupByKeys[2]]}${
+                                        item2.data[0]['場所'] !== ''
+                                          ? `（${item2.data[0]['場所'].replace(
+                                              ';',
+                                              '・'
+                                            )}）`
+                                          : ''
+                                      }`}</div>
+                                    </dd>
+                                  )
+                                )}
+                              </dl>
+                            </dd>
+                          ))}
+                        </React.Fragment>
                       ))}
-                    </ul>
+                    </dl>
                   </div>
                 )}
                 {results.length > 0 && (
