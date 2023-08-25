@@ -60,7 +60,7 @@ export const getConcatResults = (obj: object, concatDisplayKeys: string[]) => {
   const concatResults = Object.entries(obj)
     .filter(([k]) => concatDisplayKeys.includes(k))
     .map(([, value]) => {
-      return value as string
+      return value.replace(';', '・')
     })
   return concatResults.join(' ')
 }

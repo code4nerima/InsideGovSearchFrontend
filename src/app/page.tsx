@@ -805,7 +805,7 @@ export default function Home() {
                                           })}
                                         >{`${item2[groupByKeys[2]]}${
                                           item2.data[0]['場所'] !== ''
-                                            ? `（${item2.data[0]['場所']}）`
+                                            ? `（${item2.data[0]['場所'].replace(';', '・')}）`
                                             : ''
                                         }`}</div>
                                       </li>
