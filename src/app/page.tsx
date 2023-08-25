@@ -708,7 +708,9 @@ export default function Home() {
                                 key={`result-group-item-${j}`}
                                 className={css({
                                   margin: '0',
-                                  padding: '1em 0 0 1.5em',
+                                  padding: item1[groupByKeys[1]]
+                                    ? '1em 0 0 1.5em'
+                                    : '0',
                                   position: 'relative',
                                   _before: {
                                     content: '""',
@@ -732,19 +734,25 @@ export default function Home() {
                                   },
                                 })}
                               >
-                                <div
-                                  className={css({
-                                    borderRadius: '4px',
-                                    border: '1px solid #afafaf',
-                                    backgroundColor: 'white',
-                                    margin: '0',
-                                    padding: '0.5em',
-                                    maxWidth: '20em',
-                                  })}
-                                >{`${item1[groupByKeys[1]]}`}</div>
+                                {item1[groupByKeys[1]] && (
+                                  <h5
+                                    className={css({
+                                      borderRadius: '4px',
+                                      border: '1px solid #afafaf',
+                                      backgroundColor: 'white',
+                                      margin: '0',
+                                      padding: '0.5em',
+                                      maxWidth: '14em',
+                                      fontSize: '16px',
+                                      fontWeight: 'normal',
+                                    })}
+                                  >{`${item1[groupByKeys[1]]}`}</h5>
+                                )}
                                 <ul
                                   className={css({
-                                    margin: '0 0 0 2em',
+                                    margin: item1[groupByKeys[1]]
+                                      ? '0 0 0 2em'
+                                      : '0',
                                     padding: '0',
                                     position: 'relative',
                                     _before: {
@@ -805,7 +813,9 @@ export default function Home() {
                                           })}
                                         >{`${item2[groupByKeys[2]]}${
                                           item2.data[0]['場所'] !== ''
-                                            ? `（${item2.data[0]['場所'].replace(';', '・')}）`
+                                            ? `（${item2.data[0][
+                                                '場所'
+                                              ].replace(';', '・')}）`
                                             : ''
                                         }`}</div>
                                       </li>
