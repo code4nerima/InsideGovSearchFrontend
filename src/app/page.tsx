@@ -17,7 +17,7 @@ export default function Home() {
   const debug = searchParams.get('debug')
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
 
-  const groupByKeys = ['担当課', '担当係']
+  const groupByKeys = ['場所種別', '担当課', '担当係']
   const excludeDisplayKeys = [
     '手続名称',
     '書類正式名称',
@@ -703,7 +703,7 @@ export default function Home() {
                               },
                             })}
                           >
-                            {resultGroup.data.map((item, j) => (
+                            {resultGroup.data.map((item1, j) => (
                               <li
                                 key={`result-group-item-${j}`}
                                 className={css({
@@ -741,11 +741,77 @@ export default function Home() {
                                     padding: '0.5em',
                                     maxWidth: '20em',
                                   })}
-                                >{`${item[groupByKeys[1]]}${
-                                  item.data[0]['場所'] !== ''
-                                    ? `（${item.data[0]['場所']}）`
-                                    : ''
-                                }`}</div>
+                                >{`${item1[groupByKeys[1]]}`}</div>
+                                <ul
+                                  className={css({
+                                    margin: '0 0 0 2em',
+                                    padding: '0',
+                                    position: 'relative',
+                                    _before: {
+                                      content: '""',
+                                      display: 'block',
+                                      width: '0',
+                                      position: 'absolute',
+                                      top: '0',
+                                      bottom: '0',
+                                      left: '0',
+                                      borderLeft: '1px solid',
+                                      backgroundColor: 'white',
+                                    },
+                                  })}
+                                >
+                                  {item1.data.map(
+                                    (
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      item2: any,
+                                      k: number
+                                    ) => (
+                                      <li
+                                        key={`item-${j}-${k}`}
+                                        className={css({
+                                          margin: '0',
+                                          padding: '1em 0 0 1.5em',
+                                          position: 'relative',
+                                          _before: {
+                                            content: '""',
+                                            borderTop: '1px solid',
+                                            display: 'block',
+                                            height: '100%',
+                                            left: '0',
+                                            marginTop: '1em',
+                                            position: 'absolute',
+                                            top: '1.5em',
+                                            width: '1.5em',
+                                          },
+                                          _last: {
+                                            _before: {
+                                              content: '""',
+                                              bottom: '0',
+                                              height: 'auto',
+                                              top: '1.5em',
+                                              backgroundColor: 'white',
+                                            },
+                                          },
+                                        })}
+                                      >
+                                        <div
+                                          className={css({
+                                            borderRadius: '4px',
+                                            border: '1px solid #afafaf',
+                                            backgroundColor: 'white',
+                                            margin: '0',
+                                            padding: '0.5em',
+                                            maxWidth: '20em',
+                                          })}
+                                        >{`${item2[groupByKeys[2]]}${
+                                          item2.data[0]['場所'] !== ''
+                                            ? `（${item2.data[0]['場所']}）`
+                                            : ''
+                                        }`}</div>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
                               </li>
                             ))}
                           </ul>
