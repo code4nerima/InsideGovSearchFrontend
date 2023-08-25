@@ -23,6 +23,7 @@ export default function Home() {
     '書類正式名称',
     '書類略称',
     'タグ',
+    '場所種別',
     '内線番号',
     'score',
     'deviationValue',
