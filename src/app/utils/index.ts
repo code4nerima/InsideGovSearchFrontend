@@ -10,14 +10,31 @@ export const getGroupByKey = (
 ): GroupByKeyObject[] =>
   Object.values(
     arr.reduce((res, item) => {
-      const value = item[key]
-      const existing = res[value] || { [key]: value, data: [] }
-      return {
-        ...res,
-        [value]: {
-          ...existing,
-          data: [...existing.data, item],
-        },
+      if (item[key] !== undefined && item[key].includes(';')) {
+        const values = item[key].split(';')
+        const mappedArr = values.map((value: string) => {
+          const existing = res[value] || { [key]: value, data: [] }
+          return {
+            ...existing,
+            data: [...existing.data, item],
+          }
+        })
+        return mappedArr.reduce((res: any, item: { [x: string]: any }) => {
+          return {
+            ...res,
+            [item[key]]: item,
+          }
+        }, {})
+      } else {
+        const value = item[key]
+        const existing = res[value] || { [key]: value, data: [] }
+        return {
+          ...res,
+          [value]: {
+            ...existing,
+            data: [...existing.data, item],
+          },
+        }
       }
     }, {})
   )
@@ -43,7 +60,7 @@ export const getConcatResults = (obj: object, concatDisplayKeys: string[]) => {
   const concatResults = Object.entries(obj)
     .filter(([k]) => concatDisplayKeys.includes(k))
     .map(([, value]) => {
-      return value as string
+      return value.replace(';', '・')
     })
   return concatResults.join(' ')
 }
