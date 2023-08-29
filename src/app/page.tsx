@@ -252,7 +252,7 @@ export default function Home() {
               marginTop: '0',
             })}
           >
-            練馬 窓口・手続きガイド
+            練馬区 窓口・手続きガイド
           </h1>
           <div
             className={grid({
