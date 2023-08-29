@@ -359,6 +359,7 @@ export default function Home() {
                   })}
                   value={currentPrompt}
                   placeholder="例）引っ越ししたときの手続きをしたい"
+                  maxLength={100}
                   disabled={isSearchExecuting}
                   onCompositionStart={startComposition}
                   onCompositionEnd={endComposition}
