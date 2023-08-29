@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-const title = '練馬 窓口・手続きガイド'
+const title = '練馬区 窓口・手続きガイド'
 const description = '自然言語入力で知りたい届出や手続きを検索します'
 const imgUrl = 'https://guide.code4nerima.org/images/og.png'
 
