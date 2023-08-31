@@ -187,7 +187,11 @@ export default function AudioRecognition(props: {
             })}
             aria-hidden="true"
           >
-            {isTalking ? (isDetecting ? 'mic_off' : 'mic') : 'mic'}
+            {isTalking
+              ? isDetecting
+                ? 'mic_off'
+                : 'record_voice_over'
+              : 'mic'}
           </span>
         )}
         {isTalking ? (isDetecting ? 'キャンセル' : '話す') : '話す'}

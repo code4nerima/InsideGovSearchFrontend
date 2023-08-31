@@ -308,26 +308,6 @@ export default function Home() {
               </p>
             </div>
             <div
-              className={flex({
-                justify: 'center',
-                transform:
-                  isResultResponded || isSuggestedPromptResponded
-                    ? 'translateY(0)'
-                    : 'translateY(25%)',
-                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
-              })}
-            >
-              <AudioRecognition
-                getRecognitionResult={getRecognitionResult}
-                getStatusRecording={getStatusRecording}
-                doClear={
-                  (isSearchExecuting && !isResultResponded) ||
-                  isResultResponded ||
-                  currentPrompt === ''
-                }
-              />
-            </div>
-            <div
               className={css({
                 position: 'sticky',
                 top: '0',
@@ -536,6 +516,30 @@ export default function Home() {
                   </>
                 )}
               </div>
+            </div>
+            <div
+              className={flex({
+                paddingTop:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? '0'
+                    : '50px',
+                justify: 'center',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
+            >
+              <AudioRecognition
+                getRecognitionResult={getRecognitionResult}
+                getStatusRecording={getStatusRecording}
+                doClear={
+                  (isSearchExecuting && !isResultResponded) ||
+                  isResultResponded ||
+                  currentPrompt === ''
+                }
+              />
             </div>
             {isSuggestedPromptResponded ? (
               <div
