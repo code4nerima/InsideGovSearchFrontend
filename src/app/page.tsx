@@ -269,7 +269,6 @@ export default function Home() {
           <div
             className={grid({
               columns: 1,
-              gridTemplateRows: 'repeat(min-content)',
               alignSelf: 'center',
             })}
           >
@@ -285,9 +284,9 @@ export default function Home() {
             >
               <p
                 className={center({
-                  fontSize: '32px',
+                  fontSize: { mdTo2xl: '32px', smDown: '28px' },
                   textShadow: 'default',
-                  letterSpacing: '2px',
+                  letterSpacing: { mdTo2xl: '2px' },
                   margin: '16px 0',
                   animation:
                     'FloatHorizontal 7.0s ease-in-out infinite alternate',
@@ -321,7 +320,7 @@ export default function Home() {
                 top: '0',
                 zIndex: '99',
                 width: 'min(97%, 650px)',
-                margin: '0 auto',
+                margin: '-30px auto 0',
                 padding: '18px',
                 backgroundColor: 'rgba(0, 0, 0, 0.28)',
                 borderRadius: '8px',
