@@ -171,11 +171,13 @@ export default function AudioRecognition(props: {
           color: 'white',
           fontSize: '18px',
           cursor: 'pointer',
+          whiteSpace: 'pre-wrap',
           _disabled: {
             cursor: 'not-allowed',
+            '& span': { backgroundColor: '#c9c9c9', color: 'white' },
           },
         })}
-        disabled={isAppKeyExecuting}
+        disabled={isAppKeyExecuting || isSearchExecuting}
         onClick={resumePause}
       >
         {isFontReady && (
@@ -210,7 +212,11 @@ export default function AudioRecognition(props: {
               : 'mic'}
           </span>
         )}
-        {isTalking ? (isDetecting ? 'キャンセル' : '話す') : '音声入力'}
+        {isTalking
+          ? isDetecting
+            ? 'キャンセル'
+            : '用件をお話しください'
+          : `音声入力\n（タップしたら用件を話す）`}
       </button>
       {errorMessage && (
         <p
