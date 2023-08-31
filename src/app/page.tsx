@@ -68,6 +68,7 @@ export default function Home() {
   const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
   const [isAnswerResponded, setIsAnswerResponded] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
@@ -164,7 +165,7 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
-    if (e.keyCode === 13 && !isComposed) {
+    if (e.keyCode === 13 && !isComposed && !isRecording) {
       e.preventDefault()
       await handleSearch(currentPrompt)
     }
@@ -195,6 +196,10 @@ export default function Home() {
 
   const getRecognitionResult = (text: string) => {
     setCurrentPrompt(text)
+  }
+
+  const getStatusRecording = (status: boolean) => {
+    setIsRecording(status)
   }
 
   useEffect(() => {
@@ -312,7 +317,10 @@ export default function Home() {
                 transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
               })}
             >
-              <AudioRecognition getRecognitionResult={getRecognitionResult} />
+              <AudioRecognition
+                getRecognitionResult={getRecognitionResult}
+                getStatusRecording={getStatusRecording}
+              />
             </div>
             <div
               className={css({
@@ -320,9 +328,9 @@ export default function Home() {
                 top: '0',
                 zIndex: '99',
                 width: 'min(97%, 650px)',
-                margin: '-30px auto 0',
+                margin: '-15px auto 0',
                 padding: '18px',
-                backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                backgroundColor: 'rgba(0, 0, 0, 0.36)',
                 borderRadius: '8px',
                 transform:
                   isResultResponded || isSuggestedPromptResponded
@@ -420,7 +428,7 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
-                  disabled={isSearchExecuting}
+                  disabled={isSearchExecuting || isRecording}
                   onClick={() => handleSearch(currentPrompt)}
                 >
                   検索

@@ -6,8 +6,11 @@ import { getSanitizedText } from '../utils'
 import { Recorder, Result, Wrp } from '../utils/vendor/wrp'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function AudioRecognition(props: { getRecognitionResult: any }) {
-  const { getRecognitionResult } = props
+export default function AudioRecognition(props: {
+  getRecognitionResult: any
+  getStatusRecording: any
+}) {
+  const { getRecognitionResult, getStatusRecording } = props
   Wrp.serverURL = process.env.NEXT_PUBLIC_AMI_VOICE_WEBSOCKET_API_URL ?? ''
   Wrp.grammarFileNames = '-a-general'
   const [isAppKeyExecuting, setIsAppKeyExecuting] = useState(false)
@@ -95,6 +98,11 @@ export default function AudioRecognition(props: { getRecognitionResult: any }) {
   }, [recognitionResult])
 
   useEffect(() => {
+    getStatusRecording(isRecording)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRecording])
+
+  useEffect(() => {
     document.fonts.ready.then(function () {
       setIsFontReady(true)
     })
@@ -128,10 +136,10 @@ export default function AudioRecognition(props: { getRecognitionResult: any }) {
               align: 'center',
               fontFamily: 'Material Symbols Rounded Variable',
               fontSize: '24px',
-              color: 'nerimaDark',
+              color: isRecording ? 'white' : 'nerimaDark',
               width: '50px',
               height: '50px',
-              backgroundColor: 'white',
+              backgroundColor: isRecording ? 'red' : 'white',
               boxShadow: 'box',
               borderRadius: '50%',
               margin: '8px',
