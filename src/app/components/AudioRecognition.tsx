@@ -3,6 +3,7 @@ import { flex } from '../../../styled-system/patterns'
 import { getSanitizedText } from '../utils'
 import { Recorder, Result, Wrp } from '../utils/vendor/wrp'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AudioRecognition(props: { getRecognitionResult: any }) {
   const { getRecognitionResult } = props
   Wrp.serverURL = process.env.NEXT_PUBLIC_AMI_VOICE_WEBSOCKET_API_URL ?? ''
@@ -61,6 +62,7 @@ export default function AudioRecognition(props: { getRecognitionResult: any }) {
   //   console.log('TRACE', message)
   // }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Recorder.recorded = (data: any) => {
     Wrp.feedData(data)
   }
@@ -87,6 +89,7 @@ export default function AudioRecognition(props: { getRecognitionResult: any }) {
 
   useEffect(() => {
     getRecognitionResult(recognitionResult)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recognitionResult])
 
   useEffect(() => {

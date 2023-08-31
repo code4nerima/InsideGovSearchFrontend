@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const Wrp = (function () {
   // public オブジェクト
   var wrp_ = {
