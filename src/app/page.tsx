@@ -193,6 +193,10 @@ export default function Home() {
     await handleSearch(e.target.value)
   }
 
+  const getRecognitionResult = (text: string) => {
+    setCurrentPrompt(text)
+  }
+
   useEffect(() => {
     setSelectedLimit(5)
     document.fonts.ready.then(function () {
@@ -214,7 +218,6 @@ export default function Home() {
         color: 'white',
       })}
     >
-      <AudioRecognition />
       <div
         className={css({
           position: 'fixed',
@@ -298,6 +301,18 @@ export default function Home() {
                   ご用件はなんですか？
                 </span>
               </p>
+            </div>
+            <div
+              className={flex({
+                justify: 'center',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
+            >
+              <AudioRecognition getRecognitionResult={getRecognitionResult} />
             </div>
             <div
               className={css({
