@@ -5,9 +5,10 @@ import { flex } from '../../../styled-system/patterns'
 import { getSanitizedText } from '../utils'
 import { Recorder, Result, Wrp } from '../utils/vendor/wrp'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function AudioRecognition(props: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getRecognitionResult: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getStatusRecording: any
 }) {
   const { getRecognitionResult, getStatusRecording } = props
