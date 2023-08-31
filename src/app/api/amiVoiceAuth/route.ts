@@ -14,7 +14,9 @@ export async function POST() {
   const formData = new FormData()
   formData.append('sid', process.env.AMI_VOICE_SERVICE_ID)
   formData.append('spw', process.env.AMI_VOICE_SERVICE_PASSWORD)
-  const dataAsString = new URLSearchParams(formData).toString()
+  const dataAsString = new URLSearchParams(
+    formData as unknown as URLSearchParams
+  ).toString()
 
   const data = await fetch(apiUrl, {
     method: 'POST',
