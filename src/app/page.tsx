@@ -215,6 +215,16 @@ export default function Home() {
     }
   }, [isResultResponded])
 
+  useEffect(() => {
+    const handleSearchAsync = async () => {
+      if (currentPrompt !== '' && !isRecording) {
+        await handleSearch(currentPrompt)
+      }
+    }
+    handleSearchAsync()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPrompt, isRecording])
+
   return (
     <div
       className={css({
@@ -534,7 +544,10 @@ export default function Home() {
               <AudioRecognition
                 getRecognitionResult={getRecognitionResult}
                 getStatusRecording={getStatusRecording}
-                isSearchExecuting={isSearchExecuting}
+                isSearchExecuting={
+                  isSearchExecuting ||
+                  (!isSuggestedPromptResponded && isResultResponded)
+                }
                 doClear={
                   (isSearchExecuting && !isResultResponded) ||
                   isResultResponded ||
