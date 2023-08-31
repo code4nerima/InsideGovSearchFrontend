@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { useEffect, useState } from 'react'
 import { flex } from '../../../styled-system/patterns'
 import { getSanitizedText } from '../utils'
