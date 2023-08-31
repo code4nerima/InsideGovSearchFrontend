@@ -215,6 +215,16 @@ export default function Home() {
     }
   }, [isResultResponded])
 
+  useEffect(() => {
+    const handleSearchAsync = async () => {
+      if (currentPrompt !== '' && !isRecording) {
+        await handleSearch(currentPrompt)
+      }
+    }
+    handleSearchAsync()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPrompt, isRecording])
+
   return (
     <div
       className={css({
