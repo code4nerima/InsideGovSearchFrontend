@@ -231,6 +231,7 @@ export default function Home() {
           alt=""
           src="/images/bg.webp"
           fill
+          priority
           sizes="100vw"
           style={{
             objectFit: 'cover',
