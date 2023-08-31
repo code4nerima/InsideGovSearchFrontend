@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -11,6 +12,11 @@ import {
   getConcatResults,
   getGroupByKeysRecursive,
 } from './utils'
+
+const AudioRecognition = dynamic(
+  () => import('./components/AudioRecognition'),
+  { ssr: false }
+)
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -187,6 +193,10 @@ export default function Home() {
     await handleSearch(e.target.value)
   }
 
+  const getRecognitionResult = (text: string) => {
+    setCurrentPrompt(text)
+  }
+
   useEffect(() => {
     setSelectedLimit(5)
     document.fonts.ready.then(function () {
@@ -227,6 +237,7 @@ export default function Home() {
             objectFit: 'cover',
           }}
         />
+        A
       </div>
       <div
         className={grid({
@@ -291,6 +302,18 @@ export default function Home() {
                   ご用件はなんですか？
                 </span>
               </p>
+            </div>
+            <div
+              className={flex({
+                justify: 'center',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
+            >
+              <AudioRecognition getRecognitionResult={getRecognitionResult} />
             </div>
             <div
               className={css({
@@ -580,7 +603,10 @@ export default function Home() {
             )}
             {isResultResponded && (
               <div
-                className={css({ width: 'min(97%, 650px)', margin: '0 auto' })}
+                className={css({
+                  width: 'min(97%, 650px)',
+                  margin: '0 auto',
+                })}
               >
                 <h2
                   ref={resultTitleRef}
