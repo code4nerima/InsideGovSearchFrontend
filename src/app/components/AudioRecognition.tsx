@@ -11,9 +11,15 @@ export default function AudioRecognition(props: {
   getRecognitionResult: any
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getStatusRecording: any
+  isSearchExecuting: boolean
   doClear: boolean
 }) {
-  const { getRecognitionResult, getStatusRecording, doClear } = props
+  const {
+    getRecognitionResult,
+    getStatusRecording,
+    isSearchExecuting,
+    doClear,
+  } = props
   Wrp.serverURL = process.env.NEXT_PUBLIC_AMI_VOICE_WEBSOCKET_API_URL ?? ''
   Wrp.grammarFileNames = '-a-general'
   const [isAppKeyExecuting, setIsAppKeyExecuting] = useState(false)
@@ -92,6 +98,7 @@ export default function AudioRecognition(props: {
   const resumePause = async () => {
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
+      setIsTimerStarted(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
         setRecognitionResult('')
@@ -114,6 +121,15 @@ export default function AudioRecognition(props: {
     getStatusRecording(isDetecting)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDetecting])
+
+  useEffect(() => {
+    if (isSearchExecuting) {
+      Wrp.feedDataPause()
+      setIsDetecting(false)
+      setIsTalking(false)
+      setIsTimerStarted(false)
+    }
+  }, [isSearchExecuting])
 
   useEffect(() => {
     if (doClear) {
@@ -178,8 +194,8 @@ export default function AudioRecognition(props: {
               height: '50px',
               backgroundColor: isTalking
                 ? isDetecting
-                  ? 'red'
-                  : 'white'
+                  ? '#ed0000'
+                  : '#faff7c'
                 : 'white',
               boxShadow: 'box',
               borderRadius: '50%',
@@ -194,7 +210,7 @@ export default function AudioRecognition(props: {
               : 'mic'}
           </span>
         )}
-        {isTalking ? (isDetecting ? 'キャンセル' : '話す') : '話す'}
+        {isTalking ? (isDetecting ? 'キャンセル' : '話す') : '音声入力'}
       </button>
       {errorMessage && (
         <p

@@ -534,6 +534,7 @@ export default function Home() {
               <AudioRecognition
                 getRecognitionResult={getRecognitionResult}
                 getStatusRecording={getStatusRecording}
+                isSearchExecuting={isSearchExecuting}
                 doClear={
                   (isSearchExecuting && !isResultResponded) ||
                   isResultResponded ||
