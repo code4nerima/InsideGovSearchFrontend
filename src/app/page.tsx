@@ -68,6 +68,7 @@ export default function Home() {
   const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
   const [isAnswerResponded, setIsAnswerResponded] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
@@ -164,7 +165,7 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
-    if (e.keyCode === 13 && !isComposed) {
+    if (e.keyCode === 13 && !isComposed && !isRecording) {
       e.preventDefault()
       await handleSearch(currentPrompt)
     }
@@ -195,6 +196,10 @@ export default function Home() {
 
   const getRecognitionResult = (text: string) => {
     setCurrentPrompt(text)
+  }
+
+  const getStatusRecording = (status: boolean) => {
+    setIsRecording(status)
   }
 
   useEffect(() => {
@@ -269,7 +274,6 @@ export default function Home() {
           <div
             className={grid({
               columns: 1,
-              gridTemplateRows: 'repeat(min-content)',
               alignSelf: 'center',
             })}
           >
@@ -285,9 +289,9 @@ export default function Home() {
             >
               <p
                 className={center({
-                  fontSize: '32px',
+                  fontSize: { mdTo2xl: '32px', smDown: '28px' },
                   textShadow: 'default',
-                  letterSpacing: '2px',
+                  letterSpacing: { mdTo2xl: '2px' },
                   margin: '16px 0',
                   animation:
                     'FloatHorizontal 7.0s ease-in-out infinite alternate',
@@ -313,7 +317,10 @@ export default function Home() {
                 transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
               })}
             >
-              <AudioRecognition getRecognitionResult={getRecognitionResult} />
+              <AudioRecognition
+                getRecognitionResult={getRecognitionResult}
+                getStatusRecording={getStatusRecording}
+              />
             </div>
             <div
               className={css({
@@ -321,9 +328,9 @@ export default function Home() {
                 top: '0',
                 zIndex: '99',
                 width: 'min(97%, 650px)',
-                margin: '0 auto',
+                margin: '-15px auto 0',
                 padding: '18px',
-                backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                backgroundColor: 'rgba(0, 0, 0, 0.36)',
                 borderRadius: '8px',
                 transform:
                   isResultResponded || isSuggestedPromptResponded
@@ -421,7 +428,7 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
-                  disabled={isSearchExecuting}
+                  disabled={isSearchExecuting || isRecording}
                   onClick={() => handleSearch(currentPrompt)}
                 >
                   検索
