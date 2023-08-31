@@ -11,9 +11,9 @@ const Recorder = (function () {
     navigator.webkitGetUserMedia ||
     navigator.mozGetUserMedia ||
     navigator.msGetUserMedia
-  // navigator._mediaDevices.getUserMedia()
+  // navigator.mediaDevices.getUserMedia()
   navigator._mediaDevices =
-    navigator._mediaDevices ||
+    navigator.mediaDevices ||
     (navigator.getUserMedia
       ? {
           getUserMedia: function (c) {

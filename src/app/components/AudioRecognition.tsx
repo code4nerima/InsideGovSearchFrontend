@@ -74,15 +74,15 @@ export default function AudioRecognition(props: { getRecognitionResult: any }) {
   }
 
   const resumePause = async () => {
-    setIsAppKeyExecuting(true)
-    await getAppKey()
-    setIsAppKeyExecuting(false)
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
       setIsRecording(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
         setRecognitionResult('')
+        setIsAppKeyExecuting(true)
+        await getAppKey()
+        setIsAppKeyExecuting(false)
         setIsRecording(true)
         Wrp.feedDataResume()
       }
