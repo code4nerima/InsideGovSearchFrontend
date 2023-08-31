@@ -320,6 +320,11 @@ export default function Home() {
               <AudioRecognition
                 getRecognitionResult={getRecognitionResult}
                 getStatusRecording={getStatusRecording}
+                doClear={
+                  (isSearchExecuting && !isResultResponded) ||
+                  isResultResponded ||
+                  currentPrompt === ''
+                }
               />
             </div>
             <div
