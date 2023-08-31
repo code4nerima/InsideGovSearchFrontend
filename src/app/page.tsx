@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -11,6 +12,11 @@ import {
   getConcatResults,
   getGroupByKeysRecursive,
 } from './utils'
+
+const AudioRecognition = dynamic(
+  () => import('./components/AudioRecognition'),
+  { ssr: false }
+)
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -208,6 +214,7 @@ export default function Home() {
         color: 'white',
       })}
     >
+      <AudioRecognition />
       <div
         className={css({
           position: 'fixed',
@@ -226,6 +233,7 @@ export default function Home() {
             objectFit: 'cover',
           }}
         />
+        A
       </div>
       <div
         className={grid({
@@ -579,7 +587,10 @@ export default function Home() {
             )}
             {isResultResponded && (
               <div
-                className={css({ width: 'min(97%, 650px)', margin: '0 auto' })}
+                className={css({
+                  width: 'min(97%, 650px)',
+                  margin: '0 auto',
+                })}
               >
                 <h2
                   ref={resultTitleRef}
