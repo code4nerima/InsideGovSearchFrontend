@@ -51,16 +51,6 @@ export default function AudioRecognition(props: {
     }
   }
 
-  Wrp.feedDataResumeEnded = () => {
-    setIsAppKeyExecuting(false)
-    setIsTalking(true)
-    Recorder.resume()
-  }
-
-  Wrp.feedDataPauseEnded = () => {
-    Recorder.pause()
-  }
-
   Wrp.resultCreated = () => {
     setIsDetecting(true)
   }
@@ -103,6 +93,7 @@ export default function AudioRecognition(props: {
   const resumePause = async () => {
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
+      Recorder.pause()
       setIsTimerStarted(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
@@ -110,6 +101,9 @@ export default function AudioRecognition(props: {
         setErrorMessage('')
         setIsAppKeyExecuting(true)
         await getAppKey()
+        setIsAppKeyExecuting(false)
+        setIsTalking(true)
+        Recorder.resume()
         Wrp.feedDataResume()
       }
     }
@@ -128,6 +122,7 @@ export default function AudioRecognition(props: {
   useEffect(() => {
     if (isSearchExecuting) {
       Wrp.feedDataPause()
+      Recorder.pause()
       setIsDetecting(false)
       setIsTalking(false)
       setIsTimerStarted(false)
@@ -145,6 +140,7 @@ export default function AudioRecognition(props: {
     const timer = setTimeout(() => {
       if (isTimerStarted && !isDetecting) {
         Wrp.feedDataPause()
+        Recorder.pause()
         setIsDetecting(false)
         setIsTalking(false)
         setErrorMessage('音声認識に失敗しました')
