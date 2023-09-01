@@ -650,7 +650,7 @@ const Wrp = (function () {
   }
 
   // 音声データの供給の開始
-  function feedDataResume_() {
+  async function feedDataResume_() {
     if (state_ === 0) {
       interlock_ = true
       if (recorder_) {
@@ -673,14 +673,15 @@ const Wrp = (function () {
         )
       return false
     }
-    if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
     state_ = 3
     if (recorder_ && !recorder_.isActive()) {
-      recorder_.resume()
+      await recorder_.resume()
+      if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
       return true
     }
     state_ = 4
     feedDataResume__()
+    if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
     return true
   }
   function feedDataResume__() {
