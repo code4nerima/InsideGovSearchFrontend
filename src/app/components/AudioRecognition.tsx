@@ -51,6 +51,11 @@ export default function AudioRecognition(props: {
     }
   }
 
+  Wrp.feedDataResumeStarted = () => {
+    setIsAppKeyExecuting(false)
+    setIsTalking(true)
+  }
+
   Wrp.feedDataResumeEnded = () => {
     Recorder.resume()
     setIsTimerStarted(true)
@@ -105,8 +110,6 @@ export default function AudioRecognition(props: {
         setErrorMessage('')
         setIsAppKeyExecuting(true)
         await getAppKey()
-        setIsAppKeyExecuting(false)
-        setIsTalking(true)
         Wrp.feedDataResume()
       }
     }
@@ -196,32 +199,42 @@ export default function AudioRecognition(props: {
               align: 'center',
               fontFamily: 'Material Symbols Rounded Variable',
               fontSize: '24px',
-              color: isTalking
-                ? isDetecting
+              color:
+                isAppKeyExecuting || isSearchExecuting
                   ? 'white'
-                  : 'nerimaDark'
-                : 'nerimaDark',
+                  : isTalking
+                  ? isDetecting
+                    ? 'white'
+                    : 'nerimaDark'
+                  : 'nerimaDark',
               width: '50px',
               height: '50px',
-              backgroundColor: isTalking
-                ? isDetecting
-                  ? '#ed0000'
-                  : '#faff7c'
-                : 'white',
+              backgroundColor:
+                isAppKeyExecuting || isSearchExecuting
+                  ? '#c9c9c9'
+                  : isTalking
+                  ? isDetecting
+                    ? '#ed0000'
+                    : '#faff7c'
+                  : 'white',
               boxShadow: 'box',
               borderRadius: '50%',
               margin: '8px',
             })}
             aria-hidden="true"
           >
-            {isTalking
+            {isAppKeyExecuting || isSearchExecuting
+              ? 'hourglass_empty'
+              : isTalking
               ? isDetecting
                 ? 'mic_off'
                 : 'record_voice_over'
               : 'mic'}
           </span>
         )}
-        {isTalking
+        {isAppKeyExecuting || isSearchExecuting
+          ? 'お待ちください'
+          : isTalking
           ? isDetecting
             ? 'キャンセル'
             : '用件をお話しください'
