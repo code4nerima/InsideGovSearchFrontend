@@ -487,6 +487,34 @@ export default function Home() {
               </button>
             </div>
             <div
+              className={flex({
+                paddingTop:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? '0'
+                    : '50px',
+                justify: 'center',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
+            >
+              <AudioRecognition
+                getRecognitionResult={getRecognitionResult}
+                getStatusRecording={getStatusRecording}
+                isSearchExecuting={
+                  isSearchExecuting ||
+                  (!isSuggestedPromptResponded && isResultResponded)
+                }
+                doClear={
+                  (isSearchExecuting && !isResultResponded) ||
+                  isResultResponded ||
+                  currentPrompt === ''
+                }
+              />
+            </div>
+            <div
               className={css({
                 transform:
                   isResultResponded || isSuggestedPromptResponded
@@ -526,34 +554,6 @@ export default function Home() {
                   </>
                 )}
               </div>
-            </div>
-            <div
-              className={flex({
-                paddingTop:
-                  isResultResponded || isSuggestedPromptResponded
-                    ? '0'
-                    : '50px',
-                justify: 'center',
-                transform:
-                  isResultResponded || isSuggestedPromptResponded
-                    ? 'translateY(0)'
-                    : 'translateY(25%)',
-                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
-              })}
-            >
-              <AudioRecognition
-                getRecognitionResult={getRecognitionResult}
-                getStatusRecording={getStatusRecording}
-                isSearchExecuting={
-                  isSearchExecuting ||
-                  (!isSuggestedPromptResponded && isResultResponded)
-                }
-                doClear={
-                  (isSearchExecuting && !isResultResponded) ||
-                  isResultResponded ||
-                  currentPrompt === ''
-                }
-              />
             </div>
             {isSuggestedPromptResponded ? (
               <div
