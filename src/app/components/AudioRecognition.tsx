@@ -51,12 +51,9 @@ export default function AudioRecognition(props: {
     }
   }
 
-  Wrp.feedDataResumeStarted = () => {
+  Wrp.feedDataResumeEnded = () => {
     setIsAppKeyExecuting(false)
     setIsTalking(true)
-  }
-
-  Wrp.feedDataResumeEnded = () => {
     Recorder.resume()
   }
 
