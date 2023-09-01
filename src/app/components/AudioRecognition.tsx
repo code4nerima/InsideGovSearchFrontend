@@ -80,7 +80,7 @@ export default function AudioRecognition(props: {
       ? getSanitizedText(result.text)
       : result.code != 'o' && result.message
       ? '(' + result.message + ')'
-      : '(なし)'
+      : ''
     setRecognitionResult(text)
     setIsDetecting(false)
   }
