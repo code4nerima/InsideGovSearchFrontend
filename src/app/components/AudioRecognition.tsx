@@ -30,6 +30,8 @@ export default function AudioRecognition(props: {
   const [errorMessage, setErrorMessage] = useState('')
   const [isTimerStarted, setIsTimerStarted] = useState(false)
 
+  Wrp.setRecorder(Recorder)
+
   const getAppKey = async () => {
     try {
       const res = await fetch('/api/amiVoiceAuth', {
@@ -76,24 +78,9 @@ export default function AudioRecognition(props: {
   //   console.log('TRACE', message)
   // }
 
-  Recorder.resumeEnded = () => {
-    setIsTimerStarted(true)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Recorder.recorded = (data: any) => {
-    Wrp.feedData(data)
-  }
-
-  Recorder.pauseEnded = () => {
-    setIsTalking(false)
-    Wrp.disconnect()
-  }
-
   const resumePause = async () => {
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
-      Recorder.pause()
       setIsTimerStarted(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
@@ -103,7 +90,6 @@ export default function AudioRecognition(props: {
         await getAppKey()
         setIsAppKeyExecuting(false)
         setIsTalking(true)
-        Recorder.resume()
         Wrp.feedDataResume()
       }
     }
@@ -122,7 +108,6 @@ export default function AudioRecognition(props: {
   useEffect(() => {
     if (isSearchExecuting) {
       Wrp.feedDataPause()
-      Recorder.pause()
       setIsDetecting(false)
       setIsTalking(false)
       setIsTimerStarted(false)
@@ -140,7 +125,6 @@ export default function AudioRecognition(props: {
     const timer = setTimeout(() => {
       if (isTimerStarted && !isDetecting) {
         Wrp.feedDataPause()
-        Recorder.pause()
         setIsDetecting(false)
         setIsTalking(false)
         setErrorMessage('音声認識に失敗しました')

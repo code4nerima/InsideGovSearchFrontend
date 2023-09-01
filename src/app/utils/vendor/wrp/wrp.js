@@ -37,6 +37,7 @@ const Wrp = (function () {
     epi: null,
     epiElement: undefined,
     // public メソッド
+    setRecorder: setRecorder_,
     connect: connect_,
     disconnect: disconnect_,
     feedDataResume: feedDataResume_,
@@ -153,76 +154,80 @@ const Wrp = (function () {
   var reason_
   var checkIntervalTimeoutTimerId_ = null
   var interlock_ = false
-  var recorder_ = window.Recorder || null
+  var recorder_ = null ;
 
-  if (recorder_) {
-    // 録音ライブラリのプロパティの設定
-    recorder_.downSampling = true
-    recorder_.adpcmPacking = false
+  function setRecorder_(recorder) {
+    recorder_ = recorder ;
 
-    // 録音の開始処理が完了した時に呼び出されます。
-    recorder_.resumeEnded = function (codec) {
-      wrp_.codec = codec
-      if (wrp_.codecElement) wrp_.codecElement.value = wrp_.codec
-      if (state_ == 0) {
-        connect_()
-      } else if (state_ === 3) {
-        state_ = 4
-        feedDataResume__()
-      } else if (state_ === 13) {
-        state_ = 17
-        recorder_.pause()
-      } else if (state_ === 23) {
-        state_ = 27
-        recorder_.pause()
-      }
-    }
-
-    // 録音の開始処理が失敗した時または録音の停止処理が完了した時に呼び出されます。
-    recorder_.pauseEnded = function (reason) {
-      if (state_ == 0) {
-        if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
-        if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
-      } else if (state_ === 3) {
-        state_ = 2
-        if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
-        if (interlock_) {
-          disconnect_()
+    if (recorder_) {
+      // 録音ライブラリのプロパティの設定
+      recorder_.downSampling = true
+      recorder_.adpcmPacking = false
+  
+      // 録音の開始処理が完了した時に呼び出されます。
+      recorder_.resumeEnded = function (codec) {
+        wrp_.codec = codec
+        if (wrp_.codecElement) wrp_.codecElement.value = wrp_.codec
+        if (state_ == 0) {
+          connect_()
+        } else if (state_ === 3) {
+          state_ = 4
+          feedDataResume__()
+        } else if (state_ === 13) {
+          state_ = 17
+          recorder_.pause()
+        } else if (state_ === 23) {
+          state_ = 27
+          recorder_.pause()
         }
-      } else if (state_ === 4) {
-        state_ = 34
-        reason_ = reason
-      } else if (state_ === 5) {
-        state_ = 36
-        reason_ = reason
-        feedDataPause__()
-      } else if (state_ === 6) {
-        state_ = 36
-        reason_ = reason
-      } else if (state_ === 7) {
-        state_ = 2
-        if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
-        if (interlock_) {
-          disconnect_()
-        }
-      } else if (state_ === 13 || state_ === 17) {
-        state_ = 0
-        if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason_)
-        if (wrp_.disconnectEnded) wrp_.disconnectEnded()
-        interlock_ = false
-      } else if (state_ === 23 || state_ === 27) {
-        state_ = 8
-        if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason_)
-        if (wrp_.disconnectStarted) wrp_.disconnectStarted()
-        socket_.close()
       }
-    }
-
-    // 音声データが録音された時に呼び出されます。
-    recorder_.recorded = function (data) {
-      if (state_ === 5) {
-        data = recorder_.pack(data)
-        feedData__(data)
+  
+      // 録音の開始処理が失敗した時または録音の停止処理が完了した時に呼び出されます。
+      recorder_.pauseEnded = function (reason) {
+        if (state_ == 0) {
+          if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
+          if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
+        } else if (state_ === 3) {
+          state_ = 2
+          if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
+          if (interlock_) {
+            disconnect_()
+          }
+        } else if (state_ === 4) {
+          state_ = 34
+          reason_ = reason
+        } else if (state_ === 5) {
+          state_ = 36
+          reason_ = reason
+          feedDataPause__()
+        } else if (state_ === 6) {
+          state_ = 36
+          reason_ = reason
+        } else if (state_ === 7) {
+          state_ = 2
+          if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason)
+          if (interlock_) {
+            disconnect_()
+          }
+        } else if (state_ === 13 || state_ === 17) {
+          state_ = 0
+          if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason_)
+          if (wrp_.disconnectEnded) wrp_.disconnectEnded()
+          interlock_ = false
+        } else if (state_ === 23 || state_ === 27) {
+          state_ = 8
+          if (wrp_.feedDataPauseEnded) wrp_.feedDataPauseEnded(reason_)
+          if (wrp_.disconnectStarted) wrp_.disconnectStarted()
+          socket_.close()
+        }
+      }
+  
+      // 音声データが録音された時に呼び出されます。
+      recorder_.recorded = function (data) {
+        if (state_ === 5) {
+          data = recorder_.pack(data)
+          feedData__(data)
+        }
       }
     }
   }
