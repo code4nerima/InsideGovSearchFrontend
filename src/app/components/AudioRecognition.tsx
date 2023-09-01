@@ -152,6 +152,15 @@ export default function AudioRecognition(props: {
   }, [isTimerStarted, isDetecting])
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      if (errorMessage !== '') {
+        setErrorMessage('')
+      }
+    }, 3000)
+    return () => clearTimeout(timer)
+  }, [errorMessage])
+
+  useEffect(() => {
     document.fonts.ready.then(function () {
       setIsFontReady(true)
     })
