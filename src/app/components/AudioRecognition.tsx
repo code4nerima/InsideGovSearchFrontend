@@ -178,7 +178,7 @@ export default function AudioRecognition(props: {
           border: 'none',
           backgroundColor: 'transparent',
           color: 'white',
-          fontSize: '18px',
+          fontSize: '16px',
           cursor: 'pointer',
           whiteSpace: 'pre-wrap',
           _disabled: {
