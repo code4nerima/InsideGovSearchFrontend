@@ -1,4 +1,5 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -11,6 +12,11 @@ import {
   getConcatResults,
   getGroupByKeysRecursive,
 } from './utils'
+
+const AudioRecognition = dynamic(
+  () => import('./components/AudioRecognition'),
+  { ssr: false }
+)
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -62,6 +68,7 @@ export default function Home() {
   const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
   const [isAnswerResponded, setIsAnswerResponded] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
 
   const startComposition = () => setIsComposed(true)
   const endComposition = () => setIsComposed(false)
@@ -158,7 +165,7 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
-    if (e.keyCode === 13 && !isComposed) {
+    if (e.keyCode === 13 && !isComposed && !isRecording) {
       e.preventDefault()
       await handleSearch(currentPrompt)
     }
@@ -187,6 +194,14 @@ export default function Home() {
     await handleSearch(e.target.value)
   }
 
+  const getRecognitionResult = (text: string) => {
+    setCurrentPrompt(text)
+  }
+
+  const getStatusRecording = (status: boolean) => {
+    setIsRecording(status)
+  }
+
   useEffect(() => {
     setSelectedLimit(5)
     document.fonts.ready.then(function () {
@@ -199,6 +214,16 @@ export default function Home() {
       resultTitleRef.current.focus()
     }
   }, [isResultResponded])
+
+  useEffect(() => {
+    const handleSearchAsync = async () => {
+      if (currentPrompt !== '' && !isRecording) {
+        await handleSearch(currentPrompt)
+      }
+    }
+    handleSearchAsync()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPrompt, isRecording])
 
   return (
     <div
@@ -221,11 +246,13 @@ export default function Home() {
           alt=""
           src="/images/bg.webp"
           fill
+          priority
           sizes="100vw"
           style={{
             objectFit: 'cover',
           }}
         />
+        A
       </div>
       <div
         className={grid({
@@ -257,7 +284,6 @@ export default function Home() {
           <div
             className={grid({
               columns: 1,
-              gridTemplateRows: 'repeat(min-content)',
               alignSelf: 'center',
             })}
           >
@@ -273,9 +299,9 @@ export default function Home() {
             >
               <p
                 className={center({
-                  fontSize: '32px',
+                  fontSize: { mdTo2xl: '32px', smDown: '28px' },
                   textShadow: 'default',
-                  letterSpacing: '2px',
+                  letterSpacing: { mdTo2xl: '2px' },
                   margin: '16px 0',
                   animation:
                     'FloatHorizontal 7.0s ease-in-out infinite alternate',
@@ -297,9 +323,9 @@ export default function Home() {
                 top: '0',
                 zIndex: '99',
                 width: 'min(97%, 650px)',
-                margin: '0 auto',
+                margin: '-15px auto 0',
                 padding: '18px',
-                backgroundColor: 'rgba(0, 0, 0, 0.28)',
+                backgroundColor: 'rgba(0, 0, 0, 0.36)',
                 borderRadius: '8px',
                 transform:
                   isResultResponded || isSuggestedPromptResponded
@@ -397,7 +423,7 @@ export default function Home() {
                       cursor: 'wait',
                     },
                   })}
-                  disabled={isSearchExecuting}
+                  disabled={isSearchExecuting || isRecording}
                   onClick={() => handleSearch(currentPrompt)}
                 >
                   検索
@@ -501,6 +527,34 @@ export default function Home() {
                 )}
               </div>
             </div>
+            <div
+              className={flex({
+                paddingTop:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? '0'
+                    : '50px',
+                justify: 'center',
+                transform:
+                  isResultResponded || isSuggestedPromptResponded
+                    ? 'translateY(0)'
+                    : 'translateY(25%)',
+                transition: 'transform 0.5s cubic-bezier(.37,.24,.55,1)',
+              })}
+            >
+              <AudioRecognition
+                getRecognitionResult={getRecognitionResult}
+                getStatusRecording={getStatusRecording}
+                isSearchExecuting={
+                  isSearchExecuting ||
+                  (!isSuggestedPromptResponded && isResultResponded)
+                }
+                doClear={
+                  (isSearchExecuting && !isResultResponded) ||
+                  isResultResponded ||
+                  currentPrompt === ''
+                }
+              />
+            </div>
             {isSuggestedPromptResponded ? (
               <div
                 className={css({
@@ -579,7 +633,10 @@ export default function Home() {
             )}
             {isResultResponded && (
               <div
-                className={css({ width: 'min(97%, 650px)', margin: '0 auto' })}
+                className={css({
+                  width: 'min(97%, 650px)',
+                  margin: '0 auto',
+                })}
               >
                 <h2
                   ref={resultTitleRef}

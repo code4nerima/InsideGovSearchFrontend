@@ -64,3 +64,12 @@ export const getConcatResults = (obj: object, concatDisplayKeys: string[]) => {
     })
   return concatResults.join(' ')
 }
+
+export const getSanitizedText = (s: any) => {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/'/g, '&apos;')
+    .replace(/"/g, '&quot;')
+}
