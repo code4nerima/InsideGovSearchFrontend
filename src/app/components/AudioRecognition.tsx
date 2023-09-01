@@ -30,6 +30,8 @@ export default function AudioRecognition(props: {
   const [errorMessage, setErrorMessage] = useState('')
   const [isTimerStarted, setIsTimerStarted] = useState(false)
 
+  Wrp.setRecorder(Recorder)
+
   const getAppKey = async () => {
     try {
       const res = await fetch('/api/amiVoiceAuth', {
@@ -51,19 +53,6 @@ export default function AudioRecognition(props: {
     }
   }
 
-  Wrp.feedDataResumeStarted = () => {
-    setIsAppKeyExecuting(false)
-    setIsTalking(true)
-  }
-
-  Wrp.feedDataResumeEnded = () => {
-    Recorder.resume()
-  }
-
-  Wrp.feedDataPauseEnded = () => {
-    Recorder.pause()
-  }
-
   Wrp.resultCreated = () => {
     setIsDetecting(true)
   }
@@ -80,32 +69,26 @@ export default function AudioRecognition(props: {
       ? getSanitizedText(result.text)
       : result.code != 'o' && result.message
       ? '(' + result.message + ')'
-      : '(なし)'
+      : ''
     setRecognitionResult(text)
     setIsDetecting(false)
+  }
+
+  Wrp.feedDataResumeEnded = () => {
+    setIsAppKeyExecuting(false)
+    setIsTimerStarted(true)
+    setIsTalking(true)
   }
 
   // Wrp.TRACE = (message: string) => {
   //   console.log('TRACE', message)
   // }
 
-  Recorder.resumeEnded = () => {
-    setIsTimerStarted(true)
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Recorder.recorded = (data: any) => {
-    Wrp.feedData(data)
-  }
-
-  Recorder.pauseEnded = () => {
-    setIsTalking(false)
-    Wrp.disconnect()
-  }
-
   const resumePause = async () => {
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
+      setIsDetecting(false)
+      setIsTalking(false)
       setIsTimerStarted(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
@@ -113,7 +96,7 @@ export default function AudioRecognition(props: {
         setErrorMessage('')
         setIsAppKeyExecuting(true)
         await getAppKey()
-        Wrp.feedDataResume()
+        await Wrp.feedDataResume()
       }
     }
   }
@@ -160,11 +143,12 @@ export default function AudioRecognition(props: {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (errorMessage !== '') {
+      if (errorMessage !== '' && !isTimerStarted) {
         setErrorMessage('')
       }
     }, 3000)
     return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage])
 
   useEffect(() => {

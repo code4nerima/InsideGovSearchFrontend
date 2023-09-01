@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "panda codegen --clean",
     "dev": "rm -rf .next && next dev",
-    "build": "next build",
+    "build": "rm -rf .next && next build",
     "start": "next start",
     "lint": "next lint --no-cache",
     "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}' && next lint --fix"
