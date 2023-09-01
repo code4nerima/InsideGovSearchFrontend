@@ -547,7 +547,7 @@ const Recorder = (function () {
       }
     }
     navigator._mediaDevices
-      .getUserMedia({ audio: { echoCancellation: false }, video: false })
+      .getUserMedia({ audio: { echoCancellation: true }, video: false }) // デフォルトは echoCancellation: false
       .then(function (audioStream) {
         audioStream.stopTracks = function () {
           var tracks = audioStream.getTracks()

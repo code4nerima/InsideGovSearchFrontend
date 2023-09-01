@@ -51,9 +51,13 @@ export default function AudioRecognition(props: {
     }
   }
 
+  Wrp.feedDataResumeStarted = () => {
+    setIsAppKeyExecuting(false)
+    setIsTalking(true)
+  }
+
   Wrp.feedDataResumeEnded = () => {
     Recorder.resume()
-    setIsTimerStarted(true)
   }
 
   Wrp.feedDataPauseEnded = () => {
@@ -85,6 +89,10 @@ export default function AudioRecognition(props: {
   //   console.log('TRACE', message)
   // }
 
+  Recorder.resumeEnded = () => {
+    setIsTimerStarted(true)
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Recorder.recorded = (data: any) => {
     Wrp.feedData(data)
@@ -105,8 +113,6 @@ export default function AudioRecognition(props: {
         setErrorMessage('')
         setIsAppKeyExecuting(true)
         await getAppKey()
-        setIsAppKeyExecuting(false)
-        setIsTalking(true)
         Wrp.feedDataResume()
       }
     }
@@ -149,7 +155,8 @@ export default function AudioRecognition(props: {
       }
     }, 5000)
     return () => clearTimeout(timer)
-  }, [isTimerStarted, isDetecting])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTimerStarted])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -170,6 +177,7 @@ export default function AudioRecognition(props: {
     <div className={flex({ direction: 'column', align: 'center' })}>
       <button
         type="button"
+        aria-live="polite"
         className={flex({
           direction: 'column',
           align: 'center',
@@ -196,32 +204,42 @@ export default function AudioRecognition(props: {
               align: 'center',
               fontFamily: 'Material Symbols Rounded Variable',
               fontSize: '24px',
-              color: isTalking
-                ? isDetecting
+              color:
+                isAppKeyExecuting || isSearchExecuting
                   ? 'white'
-                  : 'nerimaDark'
-                : 'nerimaDark',
+                  : isTalking
+                  ? isDetecting
+                    ? 'white'
+                    : 'nerimaDark'
+                  : 'nerimaDark',
               width: '50px',
               height: '50px',
-              backgroundColor: isTalking
-                ? isDetecting
-                  ? '#ed0000'
-                  : '#faff7c'
-                : 'white',
+              backgroundColor:
+                isAppKeyExecuting || isSearchExecuting
+                  ? '#c9c9c9'
+                  : isTalking
+                  ? isDetecting
+                    ? '#ed0000'
+                    : '#faff7c'
+                  : 'white',
               boxShadow: 'box',
               borderRadius: '50%',
               margin: '8px',
             })}
             aria-hidden="true"
           >
-            {isTalking
+            {isAppKeyExecuting || isSearchExecuting
+              ? 'hourglass_empty'
+              : isTalking
               ? isDetecting
                 ? 'mic_off'
                 : 'record_voice_over'
               : 'mic'}
           </span>
         )}
-        {isTalking
+        {isAppKeyExecuting || isSearchExecuting
+          ? 'お待ちください'
+          : isTalking
           ? isDetecting
             ? 'キャンセル'
             : '用件をお話しください'
@@ -229,6 +247,7 @@ export default function AudioRecognition(props: {
       </button>
       {errorMessage && (
         <p
+          aria-live="polite"
           className={css({
             color: 'white',
             padding: '4px 12px',
