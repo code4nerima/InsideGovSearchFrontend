@@ -58,7 +58,6 @@ export default function AudioRecognition(props: {
 
   Wrp.feedDataResumeEnded = () => {
     Recorder.resume()
-    setIsTimerStarted(true)
   }
 
   Wrp.feedDataPauseEnded = () => {
@@ -89,6 +88,10 @@ export default function AudioRecognition(props: {
   // Wrp.TRACE = (message: string) => {
   //   console.log('TRACE', message)
   // }
+
+  Recorder.resumeEnded = () => {
+    setIsTimerStarted(true)
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Recorder.recorded = (data: any) => {
@@ -152,7 +155,8 @@ export default function AudioRecognition(props: {
       }
     }, 5000)
     return () => clearTimeout(timer)
-  }, [isTimerStarted, isDetecting])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isTimerStarted])
 
   useEffect(() => {
     const timer = setTimeout(() => {
