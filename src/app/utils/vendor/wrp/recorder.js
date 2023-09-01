@@ -546,7 +546,7 @@ const Recorder = (function () {
         audioProcessor_.port.onmessage = audioProcessor_onaudioprocess_
       }
     }
-    navigator._mediaDevices
+    await navigator._mediaDevices
       .getUserMedia({ audio: { echoCancellation: true }, video: false }) // デフォルトは echoCancellation: false
       .then(function (audioStream) {
         audioStream.stopTracks = function () {
