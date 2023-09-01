@@ -1,29 +1,4 @@
 const Recorder = (function () {
-  // window.AudioContext()
-  window.AudioContext =
-    window.AudioContext ||
-    window.webkitAudioContext ||
-    window.mozAudioContext ||
-    window.msAudioContext
-  // navigator.getUserMedia()
-  navigator.getUserMedia =
-    navigator.getUserMedia ||
-    navigator.webkitGetUserMedia ||
-    navigator.mozGetUserMedia ||
-    navigator.msGetUserMedia
-  // navigator.mediaDevices.getUserMedia()
-  navigator._mediaDevices =
-    navigator.mediaDevices ||
-    (navigator.getUserMedia
-      ? {
-          getUserMedia: function (c) {
-            return new Promise(function (y, n) {
-              navigator.getUserMedia(c, y, n)
-            })
-          },
-        }
-      : null)
-
   // public オブジェクト
   var recorder_ = {
     // public プロパティ
@@ -445,7 +420,7 @@ const Recorder = (function () {
         )
       return true
     }
-    if (!navigator._mediaDevices) {
+    if (!navigator.mediaDevices) {
       if (recorder_.TRACE)
         recorder_.TRACE(
           "ERROR: can't start recording (Unsupported MediaDevices class)"
@@ -546,7 +521,7 @@ const Recorder = (function () {
         audioProcessor_.port.onmessage = audioProcessor_onaudioprocess_
       }
     }
-    await navigator._mediaDevices
+    await navigator.mediaDevices
       .getUserMedia({ audio: { echoCancellation: true }, video: false }) // デフォルトは echoCancellation: false
       .then(function (audioStream) {
         audioStream.stopTracks = function () {
