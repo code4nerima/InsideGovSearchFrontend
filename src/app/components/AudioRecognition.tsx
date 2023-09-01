@@ -90,7 +90,7 @@ export default function AudioRecognition(props: {
         await getAppKey()
         setIsAppKeyExecuting(false)
         setIsTalking(true)
-        Wrp.feedDataResume()
+        await Wrp.feedDataResume()
       }
     }
   }
