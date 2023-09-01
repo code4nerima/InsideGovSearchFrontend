@@ -76,6 +76,7 @@ export default function AudioRecognition(props: {
 
   Wrp.feedDataResumeEnded = () => {
     setIsAppKeyExecuting(false)
+    setIsTimerStarted(true)
     setIsTalking(true)
   }
 
@@ -140,11 +141,12 @@ export default function AudioRecognition(props: {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (errorMessage !== '') {
+      if (errorMessage !== '' && !isTimerStarted) {
         setErrorMessage('')
       }
     }, 3000)
     return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorMessage])
 
   useEffect(() => {
