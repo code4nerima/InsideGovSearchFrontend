@@ -681,6 +681,7 @@ const Wrp = (function () {
     }
     state_ = 4
     feedDataResume__()
+    if (wrp_.feedDataResumeStarted) wrp_.feedDataResumeStarted()
     return true
   }
   function feedDataResume__() {
