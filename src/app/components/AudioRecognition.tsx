@@ -74,6 +74,11 @@ export default function AudioRecognition(props: {
     setIsDetecting(false)
   }
 
+  Wrp.feedDataResumeEnded = () => {
+    setIsAppKeyExecuting(false)
+    setIsTalking(true)
+  }
+
   // Wrp.TRACE = (message: string) => {
   //   console.log('TRACE', message)
   // }
@@ -88,8 +93,6 @@ export default function AudioRecognition(props: {
         setErrorMessage('')
         setIsAppKeyExecuting(true)
         await getAppKey()
-        setIsAppKeyExecuting(false)
-        setIsTalking(true)
         await Wrp.feedDataResume()
       }
     }
