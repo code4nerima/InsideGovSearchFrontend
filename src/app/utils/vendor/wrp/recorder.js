@@ -522,7 +522,7 @@ const Recorder = (function () {
       }
     }
     await navigator.mediaDevices
-      .getUserMedia({ audio: { echoCancellation: true }, video: false }) // デフォルトは echoCancellation: false
+      .getUserMedia({ audio: { echoCancellation: false }, video: false }) // デフォルトは echoCancellation: false
       .then(function (audioStream) {
         audioStream.stopTracks = function () {
           var tracks = audioStream.getTracks()
