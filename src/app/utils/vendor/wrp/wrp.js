@@ -658,7 +658,7 @@ const Wrp = (function () {
       }
       // <!-- for Safari
       if (recorder_ && !recorder_.isActive()) {
-        recorder_.resume()
+        await recorder_.resume()
         return true
       }
       // -->
