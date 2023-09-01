@@ -87,6 +87,8 @@ export default function AudioRecognition(props: {
   const resumePause = async () => {
     if (Wrp.isActive()) {
       Wrp.feedDataPause()
+      setIsDetecting(false)
+      setIsTalking(false)
       setIsTimerStarted(false)
     } else {
       if (Wrp.grammarFileNames !== '') {
