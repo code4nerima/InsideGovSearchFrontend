@@ -223,7 +223,7 @@ export default function Home() {
     }
     handleSearchAsync()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPrompt, isRecording])
+  }, [isRecording])
 
   return (
     <div
@@ -266,7 +266,7 @@ export default function Home() {
             columns: 1,
             gridTemplateRows: 'min-content auto',
             gap: '18px',
-            margin: 'min(4vw, 60px)',
+            margin: 'min(4vw, 60px) min(4vw, 60px) 0 min(4vw, 60px)',
             padding: 'min(4vw, 40px)',
             border: '1px solid white',
             borderRadius: 'min(7vw, 50px)',
