@@ -173,6 +173,7 @@ export default function AudioRecognition(props: {
     <div className={flex({ direction: 'column', align: 'center' })}>
       <button
         type="button"
+        aria-live="polite"
         className={flex({
           direction: 'column',
           align: 'center',
@@ -242,6 +243,7 @@ export default function AudioRecognition(props: {
       </button>
       {errorMessage && (
         <p
+          aria-live="polite"
           className={css({
             color: 'white',
             padding: '4px 12px',
