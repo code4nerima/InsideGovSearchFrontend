@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { css } from '../../../styled-system/css'
 import { flex } from '../../../styled-system/patterns'
 import { getSanitizedText } from '../utils'
-import { Recorder, Result, Wrp } from '../utils/vendor/wrp'
+import { Result, Wrp } from '../utils/vendor/wrp'
 
 export default function AudioRecognition(props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,8 +29,6 @@ export default function AudioRecognition(props: {
   const [isFontReady, setIsFontReady] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isTimerStarted, setIsTimerStarted] = useState(false)
-
-  Wrp.setRecorder(Recorder)
 
   const getAppKey = async () => {
     try {
