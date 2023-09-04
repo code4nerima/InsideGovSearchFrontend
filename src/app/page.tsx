@@ -252,7 +252,6 @@ export default function Home() {
             objectFit: 'cover',
           }}
         />
-        A
       </div>
       <div
         className={grid({
