@@ -155,7 +155,7 @@ const Wrp = (function () {
   var reason_
   var checkIntervalTimeoutTimerId_ = null
   var interlock_ = false
-  var recorder_ = Recorder ;
+  var recorder_ = Recorder
 
   if (recorder_) {
     // 録音ライブラリのプロパティの設定
