@@ -69,13 +69,19 @@ export default function AudioRecognition(props: {
       ? '(' + result.message + ')'
       : ''
     setRecognitionResult(text)
-    setIsDetecting(false)
   }
 
   Wrp.feedDataResumeEnded = () => {
     setIsAppKeyExecuting(false)
     setIsTimerStarted(true)
     setIsTalking(true)
+  }
+
+  Wrp.utteranceEnded = () => {
+    Wrp.feedDataPause()
+    setIsDetecting(false)
+    setIsTalking(false)
+    setIsTimerStarted(false)
   }
 
   // Wrp.TRACE = (message: string) => {
