@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { flex } from '../../styled-system/patterns'
 import './globals.css'
 
 const title = '練馬区 窓口・手続きガイド'
@@ -38,7 +39,33 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body suppressHydrationWarning={true}>
-        <main>{children}</main>
+        <div
+          className={flex({
+            direction: 'column',
+            justify: 'space-between',
+            minHeight: '100dvh',
+          })}
+        >
+          <main
+            className={flex({
+              direction: 'column',
+              flex: '1 0 100%',
+            })}
+          >
+            {children}
+          </main>
+          <footer
+            className={flex({
+              justify: 'center',
+              align: 'center',
+              backgroundColor: 'nerimaDark',
+              color: 'white',
+              padding: '4px 18px',
+            })}
+          >
+            <small>&copy; Code for Nerima 2023</small>
+          </footer>
+        </div>
       </body>
     </html>
   )
