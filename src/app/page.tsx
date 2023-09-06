@@ -3,17 +3,14 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import ReceptionDeskTree from './components/ReceptionDeskTree'
+import SearchResultsBlock from './components/SearchResultsBlock'
 import SuggestedPromptsBlock from './components/SuggestedPromptsBlock'
 import Loading from './loading'
-import {
-  GroupByKeyObject,
-  getConcatResults,
-  getGroupByKeysRecursive,
-} from './utils'
+import { GroupByKeyObject, getGroupByKeysRecursive } from './utils'
 
 const AudioRecognition = dynamic(
   () => import('./components/AudioRecognition'),
@@ -630,132 +627,11 @@ export default function Home() {
                     />
                   )}
                   {results.length > 0 && (
-                    <ol
-                      className={flex({
-                        flexDirection: 'column',
-                        align: 'center',
-                        justify: 'center',
-                      })}
-                    >
-                      {results.map((result, i) => (
-                        <li
-                          key={`result-${i}`}
-                          className={css({
-                            width: '100%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            padding: '18px 24px',
-                            marginBottom: '18px',
-                            borderRadius: '8px',
-                            color: '#000',
-                          })}
-                        >
-                          <h3
-                            className={css({
-                              fontSize: '22px',
-                              fontWeight: 'normal',
-                              marginTop: '0',
-                            })}
-                          >
-                            {`${i + 1}. ${result['手続名称']}`}
-                          </h3>
-                          <p
-                            className={flex({
-                              fontSize: '16px',
-                              marginTop: '0',
-                            })}
-                            aria-label={`手続き名称：${result['書類正式名称']}`}
-                          >
-                            {isFontReady && (
-                              <span
-                                className={css({
-                                  fontSize: '18px',
-                                  fontFamily: 'Material Icons Round',
-                                  color: 'nerimaDark',
-                                  paddingRight: '8px',
-                                })}
-                                aria-hidden="true"
-                              >
-                                edit
-                              </span>
-                            )}
-                            {`${result['書類正式名称']}`}
-                          </p>
-                          <p
-                            className={flex({
-                              fontSize: '22px',
-                              marginTop: '0',
-                            })}
-                            aria-label={`受付窓口：${getConcatResults(
-                              result,
-                              concatDisplayKeys
-                            )}`}
-                          >
-                            {isFontReady && (
-                              <span
-                                className={css({
-                                  fontSize: '24px',
-                                  fontFamily: 'Material Icons Round',
-                                  color: 'nerimaDark',
-                                  paddingRight: '12px',
-                                })}
-                                aria-hidden="true"
-                              >
-                                co_present
-                              </span>
-                            )}
-                            {getConcatResults(result, concatDisplayKeys)}
-                          </p>
-                          <dl
-                            className={grid({
-                              columns: 2,
-                              gridTemplateColumns: 'max-content auto',
-                              gap: '4px',
-                              fontSize: '14px',
-                              margin: '0',
-                            })}
-                          >
-                            {Object.entries(result)
-                              .filter(
-                                ([k]) =>
-                                  !excludeDisplayKeys.includes(k) &&
-                                  !concatDisplayKeys.includes(k)
-                              )
-                              .map(([key, value], j) => (
-                                <React.Fragment key={`result-${j}`}>
-                                  <dt
-                                    className={css({
-                                      _after: { content: '" : "' },
-                                    })}
-                                  >
-                                    {key}
-                                  </dt>
-                                  <dd
-                                    className={css({
-                                      margin: '0',
-                                      whiteSpace: 'pre-wrap',
-                                    })}
-                                  >
-                                    {/^http.?:\/\//.test(value as string) ? (
-                                      <a
-                                        href={value as string}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={css({
-                                          wordBreak: 'break-all',
-                                        })}
-                                      >
-                                        {value as string}
-                                      </a>
-                                    ) : (
-                                      `${value}`
-                                    )}
-                                  </dd>
-                                </React.Fragment>
-                              ))}
-                          </dl>
-                        </li>
-                      ))}
-                    </ol>
+                    <SearchResultsBlock
+                      results={results}
+                      excludeDisplayKeys={excludeDisplayKeys}
+                      concatDisplayKeys={concatDisplayKeys}
+                    />
                   )}
                   <div
                     className={css({
