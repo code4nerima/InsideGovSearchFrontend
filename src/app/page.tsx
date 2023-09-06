@@ -8,6 +8,7 @@ import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
 import ReceptionDeskTree from './components/ReceptionDeskTree'
 import SearchResultsBlock from './components/SearchResultsBlock'
+import SendFeedbackBlock from './components/SendFeedbackBlock'
 import SuggestedPromptsBlock from './components/SuggestedPromptsBlock'
 import Loading from './loading'
 import { GroupByKeyObject, getGroupByKeysRecursive } from './utils'
@@ -34,10 +35,6 @@ export default function Home() {
     'deviationValue',
   ]
   const concatDisplayKeys = ['担当課', '担当係', '場所']
-  const answerOptions = [
-    { value: 1, label: 'はい' },
-    { value: 0, label: 'いいえ' },
-  ]
   const limitSelectOptions = [
     {
       value: 5,
@@ -63,8 +60,6 @@ export default function Home() {
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
   const [isComposed, setIsComposed] = useState(false)
-  const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
-  const [isAnswerResponded, setIsAnswerResponded] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
 
@@ -137,30 +132,6 @@ export default function Home() {
     }
   }
 
-  const sendFeedback = async (answer: number) => {
-    if (answer === undefined) return
-    try {
-      setIsAnswerSendExecuting(true)
-      await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: currentPrompt,
-          keywords: keyword,
-          synonyms: synonym,
-          answer: answer,
-        }),
-      })
-      setIsAnswerResponded(true)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsAnswerSendExecuting(false)
-    }
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
     if (e.keyCode === 13 && !isComposed && !isRecording) {
@@ -177,7 +148,6 @@ export default function Home() {
     setSuggestedPrompts([])
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
-    setIsAnswerResponded(false)
   }
 
   const handleClearAll = () => {
@@ -633,93 +603,12 @@ export default function Home() {
                       concatDisplayKeys={concatDisplayKeys}
                     />
                   )}
-                  <div
-                    className={css({
-                      position: 'relative',
-                      backgroundColor: 'nerimaPale',
-                      padding: '18px 24px',
-                      borderRadius: '8px',
-                      color: '#000',
-                      marginTop: '24px',
-                    })}
-                  >
-                    <h2
-                      className={css({
-                        fontSize: '16px',
-                        fontWeight: 'normal',
-                        marginTop: '0',
-                      })}
-                    >
-                      行き先は見つかりましたか？
-                    </h2>
-                    <p className={css({ fontSize: '14px' })}>
-                      ※回答いただくと検索で入力いただいた文章は学習に活用されます。
-                    </p>
-                    {!isAnswerResponded ? (
-                      <ul className={flex({ justify: 'center' })}>
-                        {answerOptions.map((option, i) => (
-                          <li
-                            key={`answer-option-${i}`}
-                            className={css({ margin: '0 16px' })}
-                          >
-                            <button
-                              type="button"
-                              className={css({
-                                appearance: 'none',
-                                border: 'none',
-                                width: '5em',
-                                fontSize: '16px',
-                                color: 'nerimaDark',
-                                backgroundColor: 'white',
-                                boxShadow: 'box',
-                                borderRadius: '4px',
-                                padding: '6px 12px',
-                                cursor: 'pointer',
-                                _disabled: {
-                                  cursor: 'wait',
-                                },
-                              })}
-                              disabled={isAnswerSendExecuting}
-                              onClick={async () => {
-                                try {
-                                  await sendFeedback(option.value)
-                                } catch (error) {
-                                  console.error(
-                                    'Error sending feedback:',
-                                    error
-                                  )
-                                }
-                              }}
-                            >
-                              {option.label}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className={css({ marginBottom: '0' })}>
-                        ご回答ありがとうございました。
-                      </p>
-                    )}
-                    {isAnswerSendExecuting && (
-                      <div
-                        className={flex({
-                          position: 'absolute',
-                          top: '0',
-                          left: '0',
-                          width: '100%',
-                          height: '100%',
-                          backgroundColor: 'rgba(0, 0, 0, 0.28)',
-                          borderRadius: '8px',
-                          justify: 'center',
-                          align: 'center',
-                          zIndex: '1',
-                        })}
-                      >
-                        <Loading />
-                      </div>
-                    )}
-                  </div>
+                  <SendFeedbackBlock
+                    prompt={currentPrompt}
+                    keyword={keyword}
+                    synonym={synonym}
+                    doClear={currentPrompt === ''}
+                  />
                 </div>
               )}
             </div>
