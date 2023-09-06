@@ -1111,7 +1111,7 @@ export default function Home() {
               )}
             </div>
           </div>
-          <footer
+          <div
             className={css({ padding: '0 18px', '& a': { color: 'white' } })}
           >
             <p
@@ -1122,7 +1122,7 @@ export default function Home() {
                 クリエイティブ・コモンズ・ライセンス表示 4.0 国際
               </Link>
             </p>
-          </footer>
+          </div>
         </div>
       </div>
     </>
