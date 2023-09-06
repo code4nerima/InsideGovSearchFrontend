@@ -3,15 +3,15 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
+import ReceptionDeskTree from './components/ReceptionDeskTree'
+import SearchResultsBlock from './components/SearchResultsBlock'
+import SendFeedbackBlock from './components/SendFeedbackBlock'
+import SuggestedPromptsBlock from './components/SuggestedPromptsBlock'
 import Loading from './loading'
-import {
-  GroupByKeyObject,
-  getConcatResults,
-  getGroupByKeysRecursive,
-} from './utils'
+import { GroupByKeyObject, getGroupByKeysRecursive } from './utils'
 
 const AudioRecognition = dynamic(
   () => import('./components/AudioRecognition'),
@@ -35,10 +35,6 @@ export default function Home() {
     'deviationValue',
   ]
   const concatDisplayKeys = ['担当課', '担当係', '場所']
-  const answerOptions = [
-    { value: 1, label: 'はい' },
-    { value: 0, label: 'いいえ' },
-  ]
   const limitSelectOptions = [
     {
       value: 5,
@@ -58,15 +54,12 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
-  const [selectedPrompt, setSelectedPrompt] = useState('')
   const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
   const [isComposed, setIsComposed] = useState(false)
-  const [isAnswerSendExecuting, setIsAnswerSendExecuting] = useState(false)
-  const [isAnswerResponded, setIsAnswerResponded] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
 
@@ -99,7 +92,7 @@ export default function Home() {
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
-      await suggestPrompt()
+      await suggestPrompt(prompt)
     } catch (error) {
       if (error instanceof Error) {
         console.log('Error', error.message)
@@ -112,14 +105,14 @@ export default function Home() {
     }
   }
 
-  const suggestPrompt = async () => {
+  const suggestPrompt = async (prompt: string) => {
     try {
       const res = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: currentPrompt }),
+        body: JSON.stringify({ prompt: prompt }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -139,30 +132,6 @@ export default function Home() {
     }
   }
 
-  const sendFeedback = async (answer: number) => {
-    if (answer === undefined) return
-    try {
-      setIsAnswerSendExecuting(true)
-      await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: currentPrompt,
-          keywords: keyword,
-          synonyms: synonym,
-          answer: answer,
-        }),
-      })
-      setIsAnswerResponded(true)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsAnswerSendExecuting(false)
-    }
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDown = async (e: any) => {
     if (e.keyCode === 13 && !isComposed && !isRecording) {
@@ -177,10 +146,8 @@ export default function Home() {
     setKeyword('')
     setSynonym('')
     setSuggestedPrompts([])
-    setSelectedPrompt('')
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
-    setIsAnswerResponded(false)
   }
 
   const handleClearAll = () => {
@@ -188,10 +155,9 @@ export default function Home() {
     handleReset()
   }
 
-  const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedPrompt(e.target.value)
-    setCurrentPrompt(e.target.value)
-    await handleSearch(e.target.value)
+  const handleChangePrompt = async (prompt: string) => {
+    setCurrentPrompt(prompt)
+    await handleSearch(prompt)
   }
 
   const getRecognitionResult = (text: string) => {
@@ -564,56 +530,11 @@ export default function Home() {
                     margin: '0 auto',
                   })}
                 >
-                  <div
-                    className={css({
-                      backgroundColor: 'nerimaPale',
-                      padding: '18px 24px',
-                      borderRadius: '8px',
-                      color: '#000',
-                    })}
-                  >
-                    <h2
-                      className={css({
-                        display: 'inline',
-                        fontSize: '22px',
-                        fontWeight: 'normal',
-                        marginTop: '0',
-                        padding: '0 4px',
-                        background:
-                          'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
-                      })}
-                    >
-                      もし行き先が見つからなかったら
-                    </h2>
-                    <p>こちらの質問文で再度試してみてください。</p>
-                    <ul>
-                      {suggestedPrompts.map((prompt, i) => (
-                        <li
-                          key={`suggested-prompt-${i}`}
-                          className={css({ marginBottom: '12px' })}
-                        >
-                          <input
-                            type="radio"
-                            className={css({
-                              marginRight: '8px',
-                              cursor: 'pointer',
-                            })}
-                            id={`suggested-prompt-id-${i}`}
-                            name="suggested-prompt"
-                            value={prompt}
-                            checked={selectedPrompt === prompt}
-                            onChange={handleChangePrompt}
-                          />
-                          <label
-                            htmlFor={`suggested-prompt-id-${i}`}
-                            className={css({ cursor: 'pointer' })}
-                          >
-                            {prompt}
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <SuggestedPromptsBlock
+                    suggestedPrompts={suggestedPrompts}
+                    onChangePrompt={handleChangePrompt}
+                    doClear={currentPrompt === ''}
+                  />
                 </div>
               ) : (
                 isResultResponded && (
@@ -670,448 +591,29 @@ export default function Home() {
                     </p>
                   )}
                   {results.length > 0 && (
-                    <div
-                      className={css({
-                        color: '#000',
-                        padding: '18px 24px',
-                        borderRadius: '8px',
-                        backgroundColor: 'white',
-                        marginBottom: '42px',
-                      })}
-                    >
-                      <h3
-                        className={css({
-                          fontSize: '22px',
-                          fontWeight: 'normal',
-                          margin: '0',
-                        })}
-                      >
-                        とりあえず受付窓口に行ってみる
-                      </h3>
-                      <dl>
-                        {resultsGroupBy.map((resultGroup, i) => (
-                          <React.Fragment key={`result-group-${i}`}>
-                            <dt
-                              className={css({
-                                borderRadius: '4px',
-                                border: '1px solid #afafaf',
-                                backgroundColor: 'white',
-                                marginTop: '1em',
-                                padding: '0.5em',
-                                maxWidth: '14em',
-                              })}
-                            >
-                              {resultGroup[groupByKeys[0]]}
-                            </dt>
-                            {resultGroup.data.map((item1, j) => (
-                              <dd
-                                key={`result-group-item-${j}`}
-                                className={css({
-                                  margin: '0 0 0 2em',
-                                  padding: '0',
-                                  position: 'relative',
-                                  _after: {
-                                    content: '""',
-                                    display: 'block',
-                                    width: '1px',
-                                    height:
-                                      j === resultGroup.data.length - 1
-                                        ? '2.5em'
-                                        : '100%',
-                                    position: 'absolute',
-                                    top: '0',
-                                    bottom: '0',
-                                    left: '0',
-                                    backgroundColor: '#000',
-                                  },
-                                  _before: {
-                                    content: '""',
-                                    borderTop: '1px solid',
-                                    display: 'block',
-                                    height: '100%',
-                                    left: '0',
-                                    marginTop: '1em',
-                                    position: 'absolute',
-                                    top: '1.5em',
-                                    width: '1.5em',
-                                  },
-                                })}
-                              >
-                                {item1[groupByKeys[1]] ? (
-                                  <dl
-                                    className={css({
-                                      margin: '0',
-                                      padding: '1em 0 0 1.5em',
-                                      position: 'relative',
-                                      _before: {
-                                        content: '""',
-                                        borderTop: '1px solid',
-                                        display: 'block',
-                                        height: '100%',
-                                        left: '0',
-                                        marginTop: '1em',
-                                        position: 'absolute',
-                                        top: '1.5em',
-                                        width: '1.5em',
-                                      },
-                                    })}
-                                  >
-                                    <dt
-                                      className={css({
-                                        borderRadius: '4px',
-                                        border: '1px solid #afafaf',
-                                        backgroundColor: 'white',
-                                        margin: '0',
-                                        padding: '0.5em',
-                                        maxWidth: '14em',
-                                      })}
-                                    >{`${item1[groupByKeys[1]]}`}</dt>
-                                    {item1.data.map(
-                                      (
-                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                        item2: any,
-                                        k: number
-                                      ) => (
-                                        <dd
-                                          key={`item-${j}-${k}`}
-                                          className={css({
-                                            margin: '0 0 0 2em',
-                                            padding: '1em 0 0 1.5em',
-                                            position: 'relative',
-                                            _after: {
-                                              content: '""',
-                                              display: 'block',
-                                              width: '1px',
-                                              height:
-                                                k === item1.data.length - 1
-                                                  ? '2.5em'
-                                                  : '100%',
-                                              position: 'absolute',
-                                              top: '0',
-                                              bottom: '0',
-                                              left: '0',
-                                              backgroundColor: '#000',
-                                            },
-                                            _before: {
-                                              content: '""',
-                                              borderTop: '1px solid',
-                                              display: 'block',
-                                              height: '100%',
-                                              left: '0',
-                                              marginTop: '1em',
-                                              position: 'absolute',
-                                              top: '1.5em',
-                                              width: '1.5em',
-                                            },
-                                          })}
-                                        >
-                                          <div
-                                            className={css({
-                                              borderRadius: '4px',
-                                              border: '1px solid #afafaf',
-                                              backgroundColor: 'white',
-                                              margin: '0',
-                                              padding: '0.5em',
-                                              maxWidth: '20em',
-                                            })}
-                                          >{`${item2[groupByKeys[2]]}${
-                                            item2.data[0]['場所'] !== ''
-                                              ? `（${item2.data[0][
-                                                  '場所'
-                                                ].replace(';', '・')}）`
-                                              : ''
-                                          }`}</div>
-                                        </dd>
-                                      )
-                                    )}
-                                  </dl>
-                                ) : (
-                                  item1.data.map(
-                                    (
-                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                      item2: any,
-                                      k: number
-                                    ) => (
-                                      <div
-                                        key={`item-${j}-${k}`}
-                                        className={css({
-                                          margin: '0',
-                                          padding: '1em 0 0 1.5em',
-                                          position: 'relative',
-                                          _after: {
-                                            content: '""',
-                                            display: 'block',
-                                            width: '1px',
-                                            height:
-                                              k === item1.data.length - 1
-                                                ? '2.5em'
-                                                : '100%',
-                                            position: 'absolute',
-                                            top: '0',
-                                            bottom: '0',
-                                            left: '0',
-                                            backgroundColor: '#000',
-                                          },
-                                          _before: {
-                                            content: '""',
-                                            borderTop: '1px solid',
-                                            display: 'block',
-                                            height: '100%',
-                                            left: '0',
-                                            marginTop: '1em',
-                                            position: 'absolute',
-                                            top: '1.5em',
-                                            width: '1.5em',
-                                          },
-                                        })}
-                                      >
-                                        <div
-                                          className={css({
-                                            borderRadius: '4px',
-                                            border: '1px solid #afafaf',
-                                            backgroundColor: 'white',
-                                            margin: '0',
-                                            padding: '0.5em',
-                                            maxWidth: '20em',
-                                          })}
-                                        >{`${item2[groupByKeys[2]]}${
-                                          item2.data[0]['場所'] !== ''
-                                            ? `（${item2.data[0][
-                                                '場所'
-                                              ].replace(';', '・')}）`
-                                            : ''
-                                        }`}</div>
-                                      </div>
-                                    )
-                                  )
-                                )}
-                              </dd>
-                            ))}
-                          </React.Fragment>
-                        ))}
-                      </dl>
-                    </div>
+                    <ReceptionDeskTree
+                      resultsGroupBy={resultsGroupBy}
+                      groupByKeys={groupByKeys}
+                    />
                   )}
                   {results.length > 0 && (
-                    <ol
-                      className={flex({
-                        flexDirection: 'column',
-                        align: 'center',
-                        justify: 'center',
-                      })}
-                    >
-                      {results.map((result, i) => (
-                        <li
-                          key={`result-${i}`}
-                          className={css({
-                            width: '100%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                            padding: '18px 24px',
-                            marginBottom: '18px',
-                            borderRadius: '8px',
-                            color: '#000',
-                          })}
-                        >
-                          <h3
-                            className={css({
-                              fontSize: '22px',
-                              fontWeight: 'normal',
-                              marginTop: '0',
-                            })}
-                          >
-                            {`${i + 1}. ${result['手続名称']}`}
-                          </h3>
-                          <p
-                            className={flex({
-                              fontSize: '16px',
-                              marginTop: '0',
-                            })}
-                            aria-label={`手続き名称：${result['書類正式名称']}`}
-                          >
-                            {isFontReady && (
-                              <span
-                                className={css({
-                                  fontSize: '18px',
-                                  fontFamily: 'Material Icons Round',
-                                  color: 'nerimaDark',
-                                  paddingRight: '8px',
-                                })}
-                                aria-hidden="true"
-                              >
-                                edit
-                              </span>
-                            )}
-                            {`${result['書類正式名称']}`}
-                          </p>
-                          <p
-                            className={flex({
-                              fontSize: '22px',
-                              marginTop: '0',
-                            })}
-                            aria-label={`受付窓口：${getConcatResults(
-                              result,
-                              concatDisplayKeys
-                            )}`}
-                          >
-                            {isFontReady && (
-                              <span
-                                className={css({
-                                  fontSize: '24px',
-                                  fontFamily: 'Material Icons Round',
-                                  color: 'nerimaDark',
-                                  paddingRight: '12px',
-                                })}
-                                aria-hidden="true"
-                              >
-                                co_present
-                              </span>
-                            )}
-                            {getConcatResults(result, concatDisplayKeys)}
-                          </p>
-                          <dl
-                            className={grid({
-                              columns: 2,
-                              gridTemplateColumns: 'max-content auto',
-                              gap: '4px',
-                              fontSize: '14px',
-                              margin: '0',
-                            })}
-                          >
-                            {Object.entries(result)
-                              .filter(
-                                ([k]) =>
-                                  !excludeDisplayKeys.includes(k) &&
-                                  !concatDisplayKeys.includes(k)
-                              )
-                              .map(([key, value], j) => (
-                                <React.Fragment key={`result-${j}`}>
-                                  <dt
-                                    className={css({
-                                      _after: { content: '" : "' },
-                                    })}
-                                  >
-                                    {key}
-                                  </dt>
-                                  <dd
-                                    className={css({
-                                      margin: '0',
-                                      whiteSpace: 'pre-wrap',
-                                    })}
-                                  >
-                                    {/^http.?:\/\//.test(value as string) ? (
-                                      <a
-                                        href={value as string}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={css({
-                                          wordBreak: 'break-all',
-                                        })}
-                                      >
-                                        {value as string}
-                                      </a>
-                                    ) : (
-                                      `${value}`
-                                    )}
-                                  </dd>
-                                </React.Fragment>
-                              ))}
-                          </dl>
-                        </li>
-                      ))}
-                    </ol>
+                    <SearchResultsBlock
+                      results={results}
+                      excludeDisplayKeys={excludeDisplayKeys}
+                      concatDisplayKeys={concatDisplayKeys}
+                    />
                   )}
-                  <div
-                    className={css({
-                      position: 'relative',
-                      backgroundColor: 'nerimaPale',
-                      padding: '18px 24px',
-                      borderRadius: '8px',
-                      color: '#000',
-                      marginTop: '24px',
-                    })}
-                  >
-                    <h2
-                      className={css({
-                        fontSize: '16px',
-                        fontWeight: 'normal',
-                        marginTop: '0',
-                      })}
-                    >
-                      行き先は見つかりましたか？
-                    </h2>
-                    <p className={css({ fontSize: '14px' })}>
-                      ※回答いただくと検索で入力いただいた文章は学習に活用されます。
-                    </p>
-                    {!isAnswerResponded ? (
-                      <ul className={flex({ justify: 'center' })}>
-                        {answerOptions.map((option, i) => (
-                          <li
-                            key={`answer-option-${i}`}
-                            className={css({ margin: '0 16px' })}
-                          >
-                            <button
-                              type="button"
-                              className={css({
-                                appearance: 'none',
-                                border: 'none',
-                                width: '5em',
-                                fontSize: '16px',
-                                color: 'nerimaDark',
-                                backgroundColor: 'white',
-                                boxShadow: 'box',
-                                borderRadius: '4px',
-                                padding: '6px 12px',
-                                cursor: 'pointer',
-                                _disabled: {
-                                  cursor: 'wait',
-                                },
-                              })}
-                              disabled={isAnswerSendExecuting}
-                              onClick={async () => {
-                                try {
-                                  await sendFeedback(option.value)
-                                } catch (error) {
-                                  console.error(
-                                    'Error sending feedback:',
-                                    error
-                                  )
-                                }
-                              }}
-                            >
-                              {option.label}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className={css({ marginBottom: '0' })}>
-                        ご回答ありがとうございました。
-                      </p>
-                    )}
-                    {isAnswerSendExecuting && (
-                      <div
-                        className={flex({
-                          position: 'absolute',
-                          top: '0',
-                          left: '0',
-                          width: '100%',
-                          height: '100%',
-                          backgroundColor: 'rgba(0, 0, 0, 0.28)',
-                          borderRadius: '8px',
-                          justify: 'center',
-                          align: 'center',
-                          zIndex: '1',
-                        })}
-                      >
-                        <Loading />
-                      </div>
-                    )}
-                  </div>
+                  <SendFeedbackBlock
+                    prompt={currentPrompt}
+                    keyword={keyword}
+                    synonym={synonym}
+                    doClear={currentPrompt === ''}
+                  />
                 </div>
               )}
             </div>
           </div>
-          <footer
+          <div
             className={css({ padding: '0 18px', '& a': { color: 'white' } })}
           >
             <p
@@ -1122,7 +624,7 @@ export default function Home() {
                 クリエイティブ・コモンズ・ライセンス表示 4.0 国際
               </Link>
             </p>
-          </footer>
+          </div>
         </div>
       </div>
     </>
