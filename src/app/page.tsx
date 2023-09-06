@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { center, flex, grid } from '../../styled-system/patterns'
+import SuggestedPromptsBlock from './components/SuggestedPromptsBlock'
 import Loading from './loading'
 import {
   GroupByKeyObject,
@@ -58,7 +59,6 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
-  const [selectedPrompt, setSelectedPrompt] = useState('')
   const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
@@ -99,7 +99,7 @@ export default function Home() {
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
-      await suggestPrompt()
+      await suggestPrompt(prompt)
     } catch (error) {
       if (error instanceof Error) {
         console.log('Error', error.message)
@@ -112,14 +112,14 @@ export default function Home() {
     }
   }
 
-  const suggestPrompt = async () => {
+  const suggestPrompt = async (prompt: string) => {
     try {
       const res = await fetch('/api/promptVariations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: currentPrompt }),
+        body: JSON.stringify({ prompt: prompt }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -177,7 +177,6 @@ export default function Home() {
     setKeyword('')
     setSynonym('')
     setSuggestedPrompts([])
-    setSelectedPrompt('')
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
     setIsAnswerResponded(false)
@@ -188,10 +187,9 @@ export default function Home() {
     handleReset()
   }
 
-  const handleChangePrompt = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedPrompt(e.target.value)
-    setCurrentPrompt(e.target.value)
-    await handleSearch(e.target.value)
+  const handleChangePrompt = async (prompt: string) => {
+    setCurrentPrompt(prompt)
+    await handleSearch(prompt)
   }
 
   const getRecognitionResult = (text: string) => {
@@ -564,56 +562,11 @@ export default function Home() {
                     margin: '0 auto',
                   })}
                 >
-                  <div
-                    className={css({
-                      backgroundColor: 'nerimaPale',
-                      padding: '18px 24px',
-                      borderRadius: '8px',
-                      color: '#000',
-                    })}
-                  >
-                    <h2
-                      className={css({
-                        display: 'inline',
-                        fontSize: '22px',
-                        fontWeight: 'normal',
-                        marginTop: '0',
-                        padding: '0 4px',
-                        background:
-                          'linear-gradient(to bottom, transparent 0%, transparent 65%, rgba(77,166,53, 0.3) 65%, rgba(77,166,53, 0.3) 100%)',
-                      })}
-                    >
-                      もし行き先が見つからなかったら
-                    </h2>
-                    <p>こちらの質問文で再度試してみてください。</p>
-                    <ul>
-                      {suggestedPrompts.map((prompt, i) => (
-                        <li
-                          key={`suggested-prompt-${i}`}
-                          className={css({ marginBottom: '12px' })}
-                        >
-                          <input
-                            type="radio"
-                            className={css({
-                              marginRight: '8px',
-                              cursor: 'pointer',
-                            })}
-                            id={`suggested-prompt-id-${i}`}
-                            name="suggested-prompt"
-                            value={prompt}
-                            checked={selectedPrompt === prompt}
-                            onChange={handleChangePrompt}
-                          />
-                          <label
-                            htmlFor={`suggested-prompt-id-${i}`}
-                            className={css({ cursor: 'pointer' })}
-                          >
-                            {prompt}
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <SuggestedPromptsBlock
+                    suggestedPrompts={suggestedPrompts}
+                    onChangePrompt={handleChangePrompt}
+                    doClear={currentPrompt === ''}
+                  />
                 </div>
               ) : (
                 isResultResponded && (
