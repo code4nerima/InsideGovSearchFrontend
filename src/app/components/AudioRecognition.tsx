@@ -51,6 +51,23 @@ export default function AudioRecognition(props: {
     }
   }
 
+  Wrp.feedDataResumeEnded = () => {
+    setIsAppKeyExecuting(false)
+    setIsTimerStarted(true)
+    setIsTalking(true)
+  }
+
+  Wrp.utteranceStarted = () => {}
+
+  Wrp.utteranceEnded = () => {
+    Wrp.feedDataPause()
+    setIsDetecting(false)
+    setIsTalking(false)
+    setIsTimerStarted(false)
+  }
+
+  Wrp.feedDataPauseEnded = () => {}
+
   Wrp.resultCreated = () => {
     setIsDetecting(true)
   }
@@ -69,19 +86,6 @@ export default function AudioRecognition(props: {
       ? '(' + result.message + ')'
       : ''
     setRecognitionResult(text)
-  }
-
-  Wrp.feedDataResumeEnded = () => {
-    setIsAppKeyExecuting(false)
-    setIsTimerStarted(true)
-    setIsTalking(true)
-  }
-
-  Wrp.utteranceEnded = () => {
-    Wrp.feedDataPause()
-    setIsDetecting(false)
-    setIsTalking(false)
-    setIsTimerStarted(false)
   }
 
   // Wrp.TRACE = (message: string) => {
