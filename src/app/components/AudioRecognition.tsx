@@ -69,8 +69,6 @@ export default function AudioRecognition(props: {
     }
   }
 
-  Wrp.feedDataPauseEnded = () => {}
-
   Wrp.resultCreated = () => {
     setIsTimerStarted(true)
     setIsDetecting(true)
