@@ -20,6 +20,7 @@ const AudioRecognition = dynamic(
 
 const groupByKeys = ['場所種別', '担当課', '担当係']
 const excludeDisplayKeys = [
+  'ID',
   '手続名称',
   '書類正式名称',
   '書類略称',
