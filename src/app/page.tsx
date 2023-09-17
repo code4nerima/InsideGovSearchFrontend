@@ -18,33 +18,33 @@ const AudioRecognition = dynamic(
   { ssr: false }
 )
 
+const groupByKeys = ['場所種別', '担当課', '担当係']
+const excludeDisplayKeys = [
+  '手続名称',
+  '書類正式名称',
+  '書類略称',
+  'タグ',
+  '場所種別',
+  '内線番号',
+  'score',
+  'deviationValue',
+]
+const concatDisplayKeys = ['担当課', '担当係', '場所']
+const limitSelectOptions = [
+  {
+    value: 5,
+    label: '選りすぐりモード',
+  },
+  {
+    value: -1,
+    label: '寄せ集めモード',
+  },
+]
+
 export default function Home() {
   const searchParams = useSearchParams()
   const debug = searchParams.get('debug')
   const resultTitleRef = useRef<HTMLHeadingElement>(null)
-
-  const groupByKeys = ['場所種別', '担当課', '担当係']
-  const excludeDisplayKeys = [
-    '手続名称',
-    '書類正式名称',
-    '書類略称',
-    'タグ',
-    '場所種別',
-    '内線番号',
-    'score',
-    'deviationValue',
-  ]
-  const concatDisplayKeys = ['担当課', '担当係', '場所']
-  const limitSelectOptions = [
-    {
-      value: 5,
-      label: '選りすぐりモード',
-    },
-    {
-      value: -1,
-      label: '寄せ集めモード',
-    },
-  ]
 
   const [currentPrompt, setCurrentPrompt] = useState('')
   const [results, setResults] = useState([])
