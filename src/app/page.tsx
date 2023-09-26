@@ -31,16 +31,7 @@ const excludeDisplayKeys = [
   'deviationValue',
 ]
 const concatDisplayKeys = ['担当課', '担当係', '場所']
-const limitSelectOptions = [
-  {
-    value: 5,
-    label: '選りすぐりモード',
-  },
-  {
-    value: -1,
-    label: '寄せ集めモード',
-  },
-]
+const limit = 5
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -55,11 +46,11 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
-  const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
+  const [isPromptSelected, setIsPromptSelected] = useState(false)
   const [isComposed, setIsComposed] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
@@ -77,7 +68,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt, limit: selectedLimit }),
+        body: JSON.stringify({ prompt: prompt, limit: limit }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -93,6 +84,7 @@ export default function Home() {
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
+      setIsPromptSelected(false)
       await suggestPrompt(prompt)
     } catch (error) {
       if (error instanceof Error) {
@@ -103,6 +95,7 @@ export default function Home() {
     } finally {
       setIsResultResponded(true)
       setIsSearchExecuting(false)
+      setIsPromptSelected(false)
     }
   }
 
@@ -146,17 +139,19 @@ export default function Home() {
     setResultsGroupBy([])
     setKeyword('')
     setSynonym('')
-    setSuggestedPrompts([])
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
   }
 
   const handleClearAll = () => {
+    setIsPromptSelected(false)
     setCurrentPrompt('')
+    setSuggestedPrompts([])
     handleReset()
   }
 
   const handleChangePrompt = async (prompt: string) => {
+    setIsPromptSelected(true)
     setCurrentPrompt(prompt)
     await handleSearch(prompt)
   }
@@ -170,7 +165,6 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setSelectedLimit(5)
     document.fonts.ready.then(function () {
       setIsFontReady(true)
     })
@@ -398,36 +392,6 @@ export default function Home() {
                     検索
                   </button>
                 </div>
-                <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
-                  {limitSelectOptions.map((option, i) => (
-                    <li
-                      key={`limit-select-${i}`}
-                      className={css({ margin: '0 18px 12px 0' })}
-                    >
-                      <input
-                        type="radio"
-                        className={css({
-                          marginRight: '8px',
-                          cursor: 'pointer',
-                          _checked: {
-                            backgroundColor: 'red',
-                          },
-                        })}
-                        id={`limit-select-id-${i}`}
-                        name="limit-select"
-                        value={option.value}
-                        checked={selectedLimit === option.value}
-                        onChange={() => setSelectedLimit(option.value)}
-                      />
-                      <label
-                        htmlFor={`limit-select-id-${i}`}
-                        className={css({ cursor: 'pointer' })}
-                      >
-                        {option.label}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
                 <button
                   type="button"
                   className={css({
@@ -524,7 +488,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              {isSuggestedPromptResponded ? (
+              {isSuggestedPromptResponded || isPromptSelected ? (
                 <div
                   className={css({
                     width: 'min(97%, 650px)',
@@ -534,6 +498,7 @@ export default function Home() {
                   <SuggestedPromptsBlock
                     suggestedPrompts={suggestedPrompts}
                     onChangePrompt={handleChangePrompt}
+                    disabled={isSearchExecuting}
                     doClear={currentPrompt === ''}
                   />
                 </div>
