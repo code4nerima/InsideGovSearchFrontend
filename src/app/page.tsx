@@ -60,6 +60,7 @@ export default function Home() {
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
     useState(false)
+  const [isPromptSelected, setIsPromptSelected] = useState(false)
   const [isComposed, setIsComposed] = useState(false)
   const [isFontReady, setIsFontReady] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
@@ -93,6 +94,7 @@ export default function Home() {
       setSynonym(data.results.synonyms)
       setIsResultResponded(true)
       setIsSearchExecuting(false)
+      setIsPromptSelected(false)
       await suggestPrompt(prompt)
     } catch (error) {
       if (error instanceof Error) {
@@ -103,6 +105,7 @@ export default function Home() {
     } finally {
       setIsResultResponded(true)
       setIsSearchExecuting(false)
+      setIsPromptSelected(false)
     }
   }
 
@@ -146,17 +149,19 @@ export default function Home() {
     setResultsGroupBy([])
     setKeyword('')
     setSynonym('')
-    setSuggestedPrompts([])
     setIsResultResponded(false)
     setIsSuggestedPromptResponded(false)
   }
 
   const handleClearAll = () => {
+    setIsPromptSelected(false)
     setCurrentPrompt('')
+    setSuggestedPrompts([])
     handleReset()
   }
 
   const handleChangePrompt = async (prompt: string) => {
+    setIsPromptSelected(true)
     setCurrentPrompt(prompt)
     await handleSearch(prompt)
   }
@@ -524,7 +529,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
-              {isSuggestedPromptResponded ? (
+              {isSuggestedPromptResponded || isPromptSelected ? (
                 <div
                   className={css({
                     width: 'min(97%, 650px)',
@@ -534,6 +539,7 @@ export default function Home() {
                   <SuggestedPromptsBlock
                     suggestedPrompts={suggestedPrompts}
                     onChangePrompt={handleChangePrompt}
+                    disabled={isSearchExecuting}
                     doClear={currentPrompt === ''}
                   />
                 </div>

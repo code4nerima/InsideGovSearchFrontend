@@ -3,11 +3,12 @@ import { css } from '../../../styled-system/css'
 
 export default function SuggestedPromptsBlock(props: {
   suggestedPrompts: string[]
+  disabled: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChangePrompt: any
   doClear: boolean
 }) {
-  const { suggestedPrompts, onChangePrompt, doClear } = props
+  const { suggestedPrompts, disabled, onChangePrompt, doClear } = props
   const [selectedValue, setSelectedValue] = useState('')
 
   const handleChangePrompt = (e: { target: { value: string } }) => {
@@ -61,11 +62,15 @@ export default function SuggestedPromptsBlock(props: {
               className={css({
                 marginRight: '8px',
                 cursor: 'pointer',
+                _disabled: {
+                  cursor: 'wait',
+                },
               })}
               id={`suggested-prompt-id-${i}`}
               name="suggested-prompt"
               value={prompt}
               checked={selectedValue === prompt}
+              disabled={disabled}
               onChange={handleChangePrompt}
             />
             <label
