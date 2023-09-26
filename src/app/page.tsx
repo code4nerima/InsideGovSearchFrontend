@@ -31,16 +31,7 @@ const excludeDisplayKeys = [
   'deviationValue',
 ]
 const concatDisplayKeys = ['担当課', '担当係', '場所']
-const limitSelectOptions = [
-  {
-    value: 5,
-    label: '選りすぐりモード',
-  },
-  {
-    value: -1,
-    label: '寄せ集めモード',
-  },
-]
+const limit = 5
 
 export default function Home() {
   const searchParams = useSearchParams()
@@ -55,7 +46,6 @@ export default function Home() {
   const [keyword, setKeyword] = useState('')
   const [synonym, setSynonym] = useState('')
   const [suggestedPrompts, setSuggestedPrompts] = useState([])
-  const [selectedLimit, setSelectedLimit] = useState(0)
   const [isSearchExecuting, setIsSearchExecuting] = useState(false)
   const [isResultResponded, setIsResultResponded] = useState(false)
   const [isSuggestedPromptResponded, setIsSuggestedPromptResponded] =
@@ -78,7 +68,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt, limit: selectedLimit }),
+        body: JSON.stringify({ prompt: prompt, limit: limit }),
       }).then((res) => {
         if (!res.ok) {
           throw new Error(res.statusText)
@@ -175,7 +165,6 @@ export default function Home() {
   }
 
   useEffect(() => {
-    setSelectedLimit(5)
     document.fonts.ready.then(function () {
       setIsFontReady(true)
     })
@@ -403,36 +392,6 @@ export default function Home() {
                     検索
                   </button>
                 </div>
-                <ul className={flex({ wrap: 'wrap', margin: '12px 0' })}>
-                  {limitSelectOptions.map((option, i) => (
-                    <li
-                      key={`limit-select-${i}`}
-                      className={css({ margin: '0 18px 12px 0' })}
-                    >
-                      <input
-                        type="radio"
-                        className={css({
-                          marginRight: '8px',
-                          cursor: 'pointer',
-                          _checked: {
-                            backgroundColor: 'red',
-                          },
-                        })}
-                        id={`limit-select-id-${i}`}
-                        name="limit-select"
-                        value={option.value}
-                        checked={selectedLimit === option.value}
-                        onChange={() => setSelectedLimit(option.value)}
-                      />
-                      <label
-                        htmlFor={`limit-select-id-${i}`}
-                        className={css({ cursor: 'pointer' })}
-                      >
-                        {option.label}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
                 <button
                   type="button"
                   className={css({
