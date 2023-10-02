@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { flex } from '../../styled-system/patterns'
+import { flex, grid } from '../../styled-system/patterns'
 import './globals.css'
 
 const title = '練馬区 窓口・手続きガイド'
@@ -40,9 +40,10 @@ export default function RootLayout({
     <html lang="ja">
       <body suppressHydrationWarning={true}>
         <div
-          className={flex({
-            direction: 'column',
-            justify: 'space-between',
+          className={grid({
+            columns: 1,
+            gridTemplateRows: 'auto min-content',
+            gap: '0',
             minHeight: '100dvh',
           })}
         >
