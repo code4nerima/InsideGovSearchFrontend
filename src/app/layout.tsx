@@ -56,10 +56,7 @@ export default function RootLayout({
             paddingBottom: {
               _supportTouchCalloutNone: 'calc(env(safe-area-inset-bottom))',
             },
-            height: {
-              base: 'calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top))',
-              _supportTouchCalloutNone: '-webkit-fill-available',
-            },
+            minHeight: '100dvh',
           })}
         >
           <main
