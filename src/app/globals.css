@@ -3,14 +3,3 @@
 @import '@fontsource/material-icons-round';
 
 @layer reset, base, tokens, recipes, utilities;
-
-@supports (-webkit-touch-callout: none) {
-  html {
-    height: -webkit-fill-available;
-  }
-
-  body {
-    min-height: 100vh;
-    height: -webkit-fill-available;
-  }
-}
