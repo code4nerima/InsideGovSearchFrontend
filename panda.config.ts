@@ -103,12 +103,6 @@ export default defineConfig({
     },
   },
 
-  conditions: {
-    extend: {
-      supportTouchCalloutNone: '@supports (-webkit-touch-callout: none)',
-    },
-  },
-
   // The output directory for your css system
   outdir: 'styled-system',
 
