@@ -54,7 +54,7 @@ export default function RootLayout({
             gridTemplateRows: 'auto min-content',
             gap: '0',
             minHeight: {
-              base: 'calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top))',
+              base: 'calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top) - 44px)',
               _supportTouchCalloutNone: '-webkit-fill-available',
             },
           })}
