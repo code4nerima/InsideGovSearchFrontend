@@ -38,6 +38,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <meta name="theme-color" content="#4DA635" />
+      </head>
       <body suppressHydrationWarning={true}>
         <div
           className={grid({
