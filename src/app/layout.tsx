@@ -70,7 +70,7 @@ export default function RootLayout({
               align: 'center',
               backgroundColor: 'nerimaDark',
               color: 'white',
-              padding: '4px 18px calc(env(safe-area-inset-bottom) + 4px)',
+              padding: '4px 18px 12px',
             })}
           >
             <small>&copy; Code for Nerima 2023</small>
