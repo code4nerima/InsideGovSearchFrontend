@@ -39,6 +39,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <meta
+          name="viewport"
+          content="initial-scale=1, viewport-fit=cover, width=device-width"
+        />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon.png" />
         <meta name="theme-color" content="#4DA635" />
@@ -49,7 +53,10 @@ export default function RootLayout({
             columns: 1,
             gridTemplateRows: 'auto min-content',
             gap: '0',
-            minHeight: '100dvh',
+            minHeight: {
+              base: 'calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top))',
+              _supportTouchCalloutNone: '-webkit-fill-available',
+            },
           })}
         >
           <main
