@@ -53,9 +53,7 @@ export default function RootLayout({
             columns: 1,
             gridTemplateRows: 'auto min-content',
             gap: '0',
-            paddingBottom: {
-              _supportTouchCalloutNone: 'calc(env(safe-area-inset-bottom))',
-            },
+            paddingBottom: 'env(safe-area-inset-bottom)',
             minHeight: '100dvh',
           })}
         >
