@@ -53,7 +53,6 @@ export default function RootLayout({
             columns: 1,
             gridTemplateRows: 'auto min-content',
             gap: '0',
-            paddingBottom: 'env(safe-area-inset-bottom)',
             minHeight: '100dvh',
           })}
         >
@@ -71,7 +70,7 @@ export default function RootLayout({
               align: 'center',
               backgroundColor: 'nerimaDark',
               color: 'white',
-              padding: '4px 18px',
+              padding: '4px 18px calc(env(safe-area-inset-bottom) + 4px)',
             })}
           >
             <small>&copy; Code for Nerima 2023</small>
