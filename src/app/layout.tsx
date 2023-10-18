@@ -38,6 +38,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        <meta
+          name="viewport"
+          content="initial-scale=1, viewport-fit=cover, width=device-width"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <meta name="theme-color" content="#4DA635" />
+      </head>
       <body suppressHydrationWarning={true}>
         <div
           className={grid({
@@ -61,7 +70,7 @@ export default function RootLayout({
               align: 'center',
               backgroundColor: 'nerimaDark',
               color: 'white',
-              padding: '4px 18px',
+              padding: '4px 18px 12px',
             })}
           >
             <small>&copy; Code for Nerima 2023</small>
